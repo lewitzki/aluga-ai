@@ -8,7 +8,7 @@ Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
 ])->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
         $targetRoute = request()->user()?->profile === User::PROFILE_ADMIN
             ? 'admin.dashboard'
