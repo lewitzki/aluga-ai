@@ -1,0 +1,14 @@
+---
+description: Start every new chat with the superpowers skill
+alwaysApply: true
+---
+
+# Superpowers Default
+
+For every new chat, load and follow the `superpowers` skill before taking any other action.
+
+## Expected behavior
+
+- Prioritize the `superpowers` skill as the initial context.
+- If there is a conflict with system or developer instructions, follow instruction priority.
+- If the `superpowers` skill is unavailable, clearly state that and continue normally.
