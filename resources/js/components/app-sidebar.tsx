@@ -1,5 +1,10 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import {
+    BookOpen,
+    FolderGit2,
+    LayoutGrid,
+    Wrench,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -14,6 +19,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { homeDashboard } from '@/lib/home-dashboard';
+import adminTools from '@/routes/admin/tools';
 import { dashboard } from '@/routes';
 import type { NavItem, User } from '@/types';
 
@@ -45,7 +51,18 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
     const { auth } = usePage().props;
-    const mainNavItems: NavItem[] = [dashboardNavItem(auth.user)];
+    const mainNavItems: NavItem[] = [
+        dashboardNavItem(auth.user),
+        ...(auth.user?.profile === 'admin'
+            ? [
+                  {
+                      title: 'Ferramentas',
+                      href: adminTools.index.url(),
+                      icon: Wrench,
+                  },
+              ]
+            : []),
+    ];
 
     return (
         <Sidebar collapsible="icon" variant="inset">

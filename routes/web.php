@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminToolController;
 use App\Http\Controllers\ToolCatalogController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['profile:'.User::PROFILE_ADMIN])->group(function () {
         Route::inertia('admin/dashboard', 'dashboard')->name('admin.dashboard');
+
+        Route::get('admin/ferramentas', [AdminToolController::class, 'index'])->name('admin.tools.index');
+        Route::get('admin/ferramentas/criar', [AdminToolController::class, 'create'])->name('admin.tools.create');
+        Route::post('admin/ferramentas', [AdminToolController::class, 'store'])->name('admin.tools.store');
+        Route::get('admin/ferramentas/{tool}/editar', [AdminToolController::class, 'edit'])->name('admin.tools.edit');
+        Route::put('admin/ferramentas/{tool}', [AdminToolController::class, 'update'])->name('admin.tools.update');
+        Route::delete('admin/ferramentas/{tool}', [AdminToolController::class, 'destroy'])->name('admin.tools.destroy');
     });
 
     Route::middleware(['profile:'.User::PROFILE_CLIENTE])->group(function () {

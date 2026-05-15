@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RentalStatus;
 use Database\Factories\ToolFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,5 +44,12 @@ class Tool extends Model
     public function rentals(): HasMany
     {
         return $this->hasMany(Rental::class);
+    }
+
+    public function hasNonFinishedRentals(): bool
+    {
+        return $this->rentals()
+            ->where('status', '!=', RentalStatus::Finished)
+            ->exists();
     }
 }

@@ -9,10 +9,10 @@ Permitir ao admin cadastrar, editar, visualizar e remover ferramentas do catalog
 - Garantir ownership (admin so opera itens permitidos).
 
 ## Criterios de aceitacao
-- [ ] Admin cria ferramenta com nome, descricao, preco/hora e disponibilidade.
-- [ ] Admin edita dados sem quebrar historico de emprestimos.
-- [ ] Exclusao respeita regra de bloqueio quando houver emprestimo ativo.
-- [ ] Cliente nao consegue acessar operacoes de CRUD.
+- [x] Admin cria ferramenta com nome, descricao, preco/hora e disponibilidade.
+- [x] Admin edita dados sem quebrar historico de emprestimos.
+- [x] Exclusao respeita regra de bloqueio quando houver emprestimo ativo.
+- [x] Cliente nao consegue acessar operacoes de CRUD.
 
 ## Dependencias
 - `04-modelagem-do-dominio-core.md`
