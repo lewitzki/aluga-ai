@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ToolCatalogController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -7,6 +8,8 @@ use Laravel\Fortify\Features;
 Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
 ])->name('home');
+
+Route::get('catalogo', [ToolCatalogController::class, 'index'])->name('catalog.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {
