@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminToolController;
+use App\Http\Controllers\AdminToolImageController;
 use App\Http\Controllers\ToolCatalogController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('admin/ferramentas/{tool}/editar', [AdminToolController::class, 'edit'])->name('admin.tools.edit');
         Route::put('admin/ferramentas/{tool}', [AdminToolController::class, 'update'])->name('admin.tools.update');
         Route::delete('admin/ferramentas/{tool}', [AdminToolController::class, 'destroy'])->name('admin.tools.destroy');
+        Route::post('admin/ferramentas/{tool}/imagens', [AdminToolImageController::class, 'store'])->name('admin.tools.images.store');
+        Route::delete('admin/ferramentas/{tool}/imagens/{tool_image}', [AdminToolImageController::class, 'destroy'])->name('admin.tools.images.destroy');
     });
 
     Route::middleware(['profile:'.User::PROFILE_CLIENTE])->group(function () {

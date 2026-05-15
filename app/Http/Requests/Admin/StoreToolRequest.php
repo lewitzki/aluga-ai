@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\ToolImage;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreToolRequest extends FormRequest
@@ -28,6 +29,12 @@ class StoreToolRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:65535'],
             'hourly_rate' => ['required', 'numeric', 'min:0', 'max:999999.99'],
             'is_available' => ['boolean'],
+            'images' => ['sometimes', 'nullable', 'array', 'max:'.ToolImage::MAX_PER_TOOL],
+            'images.*' => [
+                'image',
+                'mimes:jpeg,jpg,png,webp',
+                'max:'.ToolImage::MAX_UPLOAD_KILOBYTES,
+            ],
         ];
     }
 }

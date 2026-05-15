@@ -5,10 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Admin\StoreToolRequest;
 use App\Http\Requests\Admin\UpdateToolRequest;
 use App\Models\Tool;
+use App\Models\ToolImage;
+use App\Services\ToolImageUploader;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 class AdminToolController extends Controller
 {
@@ -41,13 +45,32 @@ class AdminToolController extends Controller
     {
         $data = $request->validated();
 
-        Tool::query()->create([
+        $tool = Tool::query()->create([
             'user_id' => Auth::id(),
             'name' => $data['name'],
             'description' => $data['description'] ?? null,
             'hourly_rate' => $data['hourly_rate'],
             'is_available' => $data['is_available'],
         ]);
+
+        $uploadFailed = false;
+
+        if ($request->hasFile('images')) {
+            try {
+                app(ToolImageUploader::class)->attach($tool, $request->file('images'));
+            } catch (Throwable) {
+                $uploadFailed = true;
+            }
+        }
+
+        if ($uploadFailed) {
+            Inertia::flash('toast', [
+                'type' => 'warning',
+                'message' => 'Ferramenta cadastrada, mas não foi possível salvar uma ou mais imagens. Você pode enviá-las ao editar o cadastro.',
+            ]);
+
+            return to_route('admin.tools.edit', ['tool' => $tool]);
+        }
 
         Inertia::flash('toast', [
             'type' => 'success',
@@ -60,6 +83,8 @@ class AdminToolController extends Controller
     public function edit(Tool $tool): Response
     {
         $this->authorizeOwned($tool);
+
+        $tool->load(['images' => fn ($q) => $q->orderBy('sort_order')]);
 
         return Inertia::render('admin/tools/edit', [
             'tool' => self::serializeForm($tool),
@@ -128,12 +153,25 @@ class AdminToolController extends Controller
      */
     private static function serializeForm(Tool $tool): array
     {
+        $images = [];
+        foreach ($tool->images as $image) {
+            if (! $image->path) {
+                continue;
+            }
+            $images[] = [
+                'id' => $image->id,
+                'url' => Storage::disk('public')->url($image->path),
+            ];
+        }
+
         return [
             'id' => $tool->id,
             'name' => $tool->name,
             'description' => $tool->description ?? '',
             'hourly_rate' => (string) $tool->hourly_rate,
             'is_available' => $tool->is_available,
+            'images' => $images,
+            'max_images' => ToolImage::MAX_PER_TOOL,
         ];
     }
 }

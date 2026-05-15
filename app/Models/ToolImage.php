@@ -11,6 +11,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['tool_id', 'path', 'sort_order'])]
 class ToolImage extends Model
 {
+    public const MAX_PER_TOOL = 10;
+
+    /** Tamanho máximo por arquivo em kilobytes (regra Laravel `max:` em uploads). */
+    public const MAX_UPLOAD_KILOBYTES = 5120;
+
     /** @use HasFactory<ToolImageFactory> */
     use HasFactory;
 

@@ -15,6 +15,8 @@ type ToolDraft = {
     is_available: boolean;
 };
 
+const MAX_IMAGES_HINT = 10;
+
 export default function AdminToolsCreate({ tool }: { tool: ToolDraft }) {
     return (
         <>
@@ -100,6 +102,22 @@ export default function AdminToolsCreate({ tool }: { tool: ToolDraft }) {
                                 </Label>
                             </div>
                             <InputError message={errors.is_available} />
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="images">Fotos (opcional)</Label>
+                                <input
+                                    id="images"
+                                    name="images[]"
+                                    type="file"
+                                    multiple
+                                    accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+                                    className="text-muted-foreground file:text-foreground file:me-3 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-sm file:font-medium hover:file:bg-primary/20"
+                                />
+                                <InputError message={errors.images} />
+                                <p className="text-muted-foreground text-sm">
+                                    Até {MAX_IMAGES_HINT} arquivos, JPEG, PNG ou WebP, até 5 MB cada.
+                                </p>
+                            </div>
 
                             <div className="flex justify-end gap-2">
                                 <Button variant="outline" type="button" asChild>
