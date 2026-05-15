@@ -31,21 +31,27 @@ import {
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { useInitials } from '@/hooks/use-initials';
+import { homeDashboard } from '@/lib/home-dashboard';
 import { cn, toUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
-import type { BreadcrumbItem, NavItem } from '@/types';
+import type { BreadcrumbItem, NavItem, User } from '@/types';
 
 type Props = {
     breadcrumbs?: BreadcrumbItem[];
 };
 
-const mainNavItems: NavItem[] = [
-    {
+function dashboardNavItem(user: User | null | undefined): NavItem {
+    const href =
+        user != null
+            ? homeDashboard(user)
+            : dashboard();
+
+    return {
         title: 'Dashboard',
-        href: dashboard(),
+        href,
         icon: LayoutGrid,
-    },
-];
+    };
+}
 
 const rightNavItems: NavItem[] = [
     {
@@ -66,6 +72,7 @@ const activeItemStyles =
 export function AppHeader({ breadcrumbs = [] }: Props) {
     const page = usePage();
     const { auth } = page.props;
+    const mainNavItems: NavItem[] = [dashboardNavItem(auth.user)];
     const getInitials = useInitials();
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
 
@@ -135,7 +142,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                     </div>
 
                     <Link
-                        href={dashboard()}
+                        href={dashboardNavItem(auth.user).href}
                         prefetch
                         className="flex items-center space-x-2"
                     >

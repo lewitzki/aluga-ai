@@ -9,10 +9,10 @@ Aplicar controle de acesso por papel para separar claramente area administrativa
 - Expor capacidade de acesso no frontend para navegacao condicional.
 
 ## Criterios de aceitacao
-- [ ] Rotas de admin retornam 403 para clientes.
-- [ ] Rotas de cliente retornam 403 para admins quando necessario.
-- [ ] Menus e links exibem apenas opcoes permitidas.
-- [ ] Cobertura minima com testes de autorizacao.
+- [x] Rotas de admin retornam 403 para clientes.
+- [x] Rotas de cliente retornam 403 para admins quando necessario.
+- [x] Menus e links exibem apenas opcoes permitidas.
+- [x] Cobertura minima com testes de autorizacao.
 
 ## Dependencias
 - `02-registro-admin-e-cliente-com-perfis.md`

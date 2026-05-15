@@ -17,8 +17,13 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->route($targetRoute);
     })->name('dashboard');
 
-    Route::inertia('admin/dashboard', 'dashboard')->name('admin.dashboard');
-    Route::inertia('cliente/dashboard', 'dashboard')->name('cliente.dashboard');
+    Route::middleware(['profile:'.User::PROFILE_ADMIN])->group(function () {
+        Route::inertia('admin/dashboard', 'dashboard')->name('admin.dashboard');
+    });
+
+    Route::middleware(['profile:'.User::PROFILE_CLIENTE])->group(function () {
+        Route::inertia('cliente/dashboard', 'dashboard')->name('cliente.dashboard');
+    });
 });
 
 require __DIR__.'/settings.php';

@@ -4,7 +4,7 @@ import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { logout } from '@/routes';
-import { send } from '@/routes/verification';
+import { send } from '@/lib/verification-notification';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     return (
