@@ -304,6 +304,12 @@ export default function Catalog({
                         >
                             {tools.data.map((tool) => (
                                 <li key={tool.id}>
+                                    <Link
+                                        href={catalog.show.url(tool.id)}
+                                        aria-label={`Ver detalhes de ${tool.name}`}
+                                        data-testid="catalog-tool-link"
+                                        className="block rounded-xl outline-none transition hover:opacity-[0.97] focus-visible:ring-2 focus-visible:ring-[#19140056] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FDFDFFC] dark:focus-visible:ring-[#EDEDECC0] dark:focus-visible:ring-offset-[#0a0a0a]"
+                                    >
                                     <Card className="h-full overflow-hidden border-[#19140026] shadow-none dark:border-[#3E3E3A]">
                                         <div className="aspect-video bg-[#f4f4f5] dark:bg-[#161615]">
                                             {tool.thumbnail_url ? (
@@ -360,6 +366,7 @@ export default function Catalog({
                                             </p>
                                         </CardContent>
                                     </Card>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>

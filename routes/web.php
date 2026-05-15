@@ -10,6 +10,7 @@ Route::inertia('/', 'welcome', [
 ])->name('home');
 
 Route::get('catalogo', [ToolCatalogController::class, 'index'])->name('catalog.index');
+Route::get('catalogo/{tool}', [ToolCatalogController::class, 'show'])->name('catalog.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', function () {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tool;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -87,6 +88,45 @@ class ToolCatalogController extends Controller
             'tools' => $tools,
             'canRegister' => Features::enabled(Features::registration()),
         ]);
+    }
+
+    public function show(Request $request, Tool $tool): Response
+    {
+        $tool->load(['images' => fn ($q) => $q->orderBy('sort_order')]);
+
+        $user = $request->user();
+
+        return Inertia::render('catalog/show', [
+            'tool' => self::serializeToolDetail($tool),
+            'canRequestRental' => $user !== null && $user->profile === User::PROFILE_CLIENTE,
+            'canRegister' => Features::enabled(Features::registration()),
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function serializeToolDetail(Tool $tool): array
+    {
+        $images = [];
+        foreach ($tool->images as $image) {
+            if (! $image->path) {
+                continue;
+            }
+            $images[] = [
+                'url' => Storage::disk('public')->url($image->path),
+                'alt' => $tool->name,
+            ];
+        }
+
+        return [
+            'id' => $tool->id,
+            'name' => $tool->name,
+            'description' => $tool->description,
+            'hourly_rate' => (string) $tool->hourly_rate,
+            'is_available' => $tool->is_available,
+            'images' => $images,
+        ];
     }
 
     /**

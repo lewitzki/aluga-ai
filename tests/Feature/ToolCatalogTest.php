@@ -4,6 +4,7 @@ use App\Enums\RentalStatus;
 use App\Models\Rental;
 use App\Models\Tool;
 use App\Models\User;
+use Database\Factories\ToolImageFactory;
 use Inertia\Testing\AssertableInertia as Assert;
 
 function inertiaProps($response): array
@@ -154,4 +155,77 @@ test('paginação preserva filtros na URL das páginas', function () {
     expect($next)->not->toBeNull()
         ->and($next)->toContain('descricao=')
         ->and($next)->toContain('disponivel=');
+});
+
+test('visitante acessa detalhe de ferramenta existente', function () {
+    $tool = Tool::factory()->create([
+        'name' => 'Ferramenta Detalhe Pública',
+        'description' => 'Descrição completa para a página de detalhe.',
+        'hourly_rate' => 33,
+        'is_available' => true,
+    ]);
+
+    $response = $this->get(route('catalog.show', $tool));
+
+    $response->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('catalog/show'));
+
+    $props = inertiaProps($response);
+
+    expect($props['props']['tool']['id'])->toBe($tool->id)
+        ->and($props['props']['tool']['name'])->toBe('Ferramenta Detalhe Pública')
+        ->and($props['props']['canRequestRental'])->toBeFalse();
+});
+
+test('detalhe serializa imagens em ordem', function () {
+    $tool = Tool::factory()->create(['name' => 'Com fotos']);
+
+    ToolImageFactory::new()->create([
+        'tool_id' => $tool->id,
+        'path' => 'tools/second.jpg',
+        'sort_order' => 20,
+    ]);
+
+    ToolImageFactory::new()->create([
+        'tool_id' => $tool->id,
+        'path' => 'tools/first.jpg',
+        'sort_order' => 5,
+    ]);
+
+    $response = $this->get(route('catalog.show', $tool));
+
+    $props = inertiaProps($response);
+    $urls = collect($props['props']['tool']['images'])->pluck('url')->all();
+
+    expect($urls)->toHaveCount(2)
+        ->and($urls[0])->toContain('first.jpg')
+        ->and($urls[1])->toContain('second.jpg');
+});
+
+test('ferramenta inexistente retorna 404 com página Inertia', function () {
+    $this->get('/catalogo/999999999')
+        ->assertNotFound()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('errors/not-found'));
+});
+
+test('ferramenta excluída (soft delete) não tem detalhe público', function () {
+    $tool = Tool::factory()->create();
+    $tool->delete();
+
+    $this->get(route('catalog.show', $tool))->assertNotFound();
+});
+
+test('cliente autenticado pode solicitar empréstimo na página de detalhe', function () {
+    $cliente = User::factory()->cliente()->create();
+    $tool = Tool::factory()->create();
+
+    $response = $this->actingAs($cliente)->get(route('catalog.show', $tool));
+
+    $response->assertOk();
+
+    $props = inertiaProps($response);
+
+    expect($props['props']['canRequestRental'])->toBeTrue();
 });

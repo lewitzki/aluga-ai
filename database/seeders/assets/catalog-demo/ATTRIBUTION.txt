@@ -1,0 +1,10 @@
+Imagens de exemplo (Unsplash License — https://unsplash.com/license):
+- furadeira.jpg — foto do perfil Unsplash usada para furadeira / ferramenta elétrica portátil
+- betoneira.jpg — canteiro / equipamento de obra (ilustra betoneira / volume)
+- marcenaria.jpg — bancada e ferramentas de madeira
+- bancada-trabalho.jpg — oficina / bancada
+- ferramentas-parede.jpg — organização de ferramentas
+- caixa-ferramentas.jpg — caixa de ferramentas
+- canteiro.jpg — obra / construção
+
+Redistribuição: arquivos redimensionados e servidos localmente pelo aplicativo.

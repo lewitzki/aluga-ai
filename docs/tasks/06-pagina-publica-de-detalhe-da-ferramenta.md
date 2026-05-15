@@ -9,10 +9,10 @@ Exibir detalhes completos de uma ferramenta para apoiar decisao de emprestimo.
 - Preparar CTA para iniciar solicitacao de emprestimo quando autenticado.
 
 ## Criterios de aceitacao
-- [ ] Acessando uma ferramenta valida, pagina renderiza dados completos.
-- [ ] Ferramenta inexistente retorna 404 amigavel.
-- [ ] Fotos sao exibidas com fallback quando nao houver imagem.
-- [ ] Usuario autenticado visualiza acao para emprestar.
+- [x] Acessando uma ferramenta valida, pagina renderiza dados completos.
+- [x] Ferramenta inexistente retorna 404 amigavel.
+- [x] Fotos sao exibidas com fallback quando nao houver imagem.
+- [x] Usuario autenticado visualiza acao para emprestar.
 
 ## Dependencias
 - `05-catalogo-publico-de-ferramentas-com-filtros.md`
