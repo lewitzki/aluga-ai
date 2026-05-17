@@ -9,10 +9,10 @@ Permitir ao cliente autenticado abrir uma solicitacao de emprestimo com periodo 
 - Definir status inicial (`scheduled` ou equivalente).
 
 ## Criterios de aceitacao
-- [ ] Cliente autenticado consegue solicitar emprestimo de ferramenta elegivel.
-- [ ] Visitante anonimo e redirecionado para login ao tentar emprestar.
-- [ ] Solicitacao invalida (datas inconsistentes) retorna erro de validacao.
-- [ ] Emprestimo criado fica associado ao cliente e ferramenta.
+- [x] Cliente autenticado consegue solicitar emprestimo de ferramenta elegivel.
+- [x] Visitante anonimo e redirecionado para login ao tentar emprestar.
+- [x] Solicitacao invalida (datas inconsistentes) retorna erro de validacao.
+- [x] Emprestimo criado fica associado ao cliente e ferramenta.
 
 ## Dependencias
 - `06-pagina-publica-de-detalhe-da-ferramenta.md`

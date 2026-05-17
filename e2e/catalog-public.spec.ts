@@ -134,4 +134,34 @@ test.describe('Catálogo público', () => {
 
         await expect(page.getByTestId('catalog-detail-cta-rental')).toBeVisible();
     });
+
+    test('cliente envia solicitação de empréstimo a partir do detalhe', async ({
+        page,
+    }) => {
+        await login(page, 'cliente@teste.local');
+        await page.goto('/catalogo');
+        await page
+            .getByTestId('catalog-filter-descricao')
+            .fill('furadeira_catalogo_token_xyz');
+        await page.getByTestId('catalog-apply-filters').click();
+        await page
+            .getByRole('link', {
+                name: /Ver detalhes de Furadeira Catálogo E2E/i,
+            })
+            .click();
+
+        await page
+            .getByTestId('catalog-rental-starts-at')
+            .fill('2031-06-01T10:00');
+        await page
+            .getByTestId('catalog-rental-ends-at')
+            .fill('2031-06-02T18:00');
+
+        await Promise.all([
+            page.waitForURL(/\/cliente\/dashboard(\?.*)?$/, { timeout: 30_000 }),
+            page.getByTestId('catalog-detail-cta-rental').click(),
+        ]);
+
+        await expect(page.getByTestId('dashboard-flash-success')).toBeVisible();
+    });
 });

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminToolController;
 use App\Http\Controllers\AdminToolImageController;
+use App\Http\Controllers\ClientRentalController;
 use App\Http\Controllers\ToolCatalogController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,8 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::middleware(['profile:'.User::PROFILE_CLIENTE])->group(function () {
+        Route::post('catalogo/{tool}/emprestimos', [ClientRentalController::class, 'store'])
+            ->name('catalog.rentals.store');
         Route::inertia('cliente/dashboard', 'dashboard')->name('cliente.dashboard');
     });
 });

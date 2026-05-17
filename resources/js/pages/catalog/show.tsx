@@ -1,6 +1,10 @@
-import { Head, Link } from '@inertiajs/react';
+import { Form, Head, Link } from '@inertiajs/react';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
 import { homeDashboard } from '@/lib/home-dashboard';
 import catalog from '@/routes/catalog';
 import { login, register } from '@/routes';
@@ -175,19 +179,68 @@ export default function CatalogShow({
                             </div>
 
                             {canRequestRental ? (
-                                <div className="pt-2">
-                                    <Button
-                                        asChild
-                                        className="w-full sm:w-auto"
-                                        data-testid="catalog-detail-cta-rental"
-                                    >
-                                        <Link href="/cliente/dashboard">
-                                            Solicitar empréstimo
-                                        </Link>
-                                    </Button>
-                                    <p className="mt-2 text-xs text-[#706f6c] dark:text-[#A1A09A]">
-                                        O fluxo completo de solicitação será
-                                        tratado no painel do cliente (em breve).
+                                <Form
+                                    action={catalog.rentals.store.url(tool.id)}
+                                    method="post"
+                                    options={{ preserveScroll: true }}
+                                    className="space-y-4 pt-2"
+                                >
+                                    {({ processing, errors }) => (
+                                        <>
+                                            <div className="grid gap-2 sm:grid-cols-2 sm:gap-4">
+                                                <div className="grid gap-2">
+                                                    <Label htmlFor="starts_at">
+                                                        Início previsto
+                                                    </Label>
+                                                    <Input
+                                                        id="starts_at"
+                                                        name="starts_at"
+                                                        type="datetime-local"
+                                                        required
+                                                        data-testid="catalog-rental-starts-at"
+                                                    />
+                                                    <InputError
+                                                        message={errors.starts_at}
+                                                    />
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <Label htmlFor="expected_ends_at">
+                                                        Fim previsto
+                                                    </Label>
+                                                    <Input
+                                                        id="expected_ends_at"
+                                                        name="expected_ends_at"
+                                                        type="datetime-local"
+                                                        required
+                                                        data-testid="catalog-rental-ends-at"
+                                                    />
+                                                    <InputError
+                                                        message={
+                                                            errors.expected_ends_at
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                            <Button
+                                                type="submit"
+                                                className="w-full sm:w-auto"
+                                                disabled={processing}
+                                                data-testid="catalog-detail-cta-rental"
+                                            >
+                                                {processing && (
+                                                    <Spinner className="mr-2" />
+                                                )}
+                                                Solicitar empréstimo
+                                            </Button>
+                                        </>
+                                    )}
+                                </Form>
+                            ) : auth.user?.profile === 'cliente' &&
+                              !tool.is_available ? (
+                                <div className="border-t border-[#19140026] pt-6 dark:border-[#3E3E3A]">
+                                    <p className="text-[#706f6c] dark:text-[#A1A09A]">
+                                        Esta ferramenta está indisponível no
+                                        cadastro e não aceita novas solicitações.
                                     </p>
                                 </div>
                             ) : auth.user ? null : (

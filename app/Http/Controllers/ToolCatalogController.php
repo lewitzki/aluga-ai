@@ -98,7 +98,9 @@ class ToolCatalogController extends Controller
 
         return Inertia::render('catalog/show', [
             'tool' => self::serializeToolDetail($tool),
-            'canRequestRental' => $user !== null && $user->profile === User::PROFILE_CLIENTE,
+            'canRequestRental' => $user !== null
+                && $user->profile === User::PROFILE_CLIENTE
+                && $tool->is_available,
             'canRegister' => Features::enabled(Features::registration()),
         ]);
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\RentalStatus;
+use Carbon\Carbon;
 use Database\Factories\ToolFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -50,6 +51,20 @@ class Tool extends Model
     {
         return $this->rentals()
             ->where('status', '!=', RentalStatus::Finished)
+            ->exists();
+    }
+
+    /**
+     * Whether an existing rental intersects [periodStart, periodEnd).
+     * Aligned with the catalog period filter overlap logic.
+     */
+    public function hasOverlappingRentalPeriod(Carbon $periodStart, Carbon $periodEnd): bool
+    {
+        return $this->rentals()
+            ->whereRaw(
+                'rentals.starts_at < ? AND COALESCE(rentals.ended_at, rentals.expected_ends_at) > ?',
+                [$periodEnd, $periodStart]
+            )
             ->exists();
     }
 }

@@ -219,7 +219,7 @@ test('ferramenta excluída (soft delete) não tem detalhe público', function ()
 
 test('cliente autenticado pode solicitar empréstimo na página de detalhe', function () {
     $cliente = User::factory()->cliente()->create();
-    $tool = Tool::factory()->create();
+    $tool = Tool::factory()->create(['is_available' => true]);
 
     $response = $this->actingAs($cliente)->get(route('catalog.show', $tool));
 
@@ -228,4 +228,17 @@ test('cliente autenticado pode solicitar empréstimo na página de detalhe', fun
     $props = inertiaProps($response);
 
     expect($props['props']['canRequestRental'])->toBeTrue();
+});
+
+test('cliente autenticado não solicita empréstimo quando ferramenta está indisponível no cadastro', function () {
+    $cliente = User::factory()->cliente()->create();
+    $tool = Tool::factory()->create(['is_available' => false]);
+
+    $response = $this->actingAs($cliente)->get(route('catalog.show', $tool));
+
+    $response->assertOk();
+
+    $props = inertiaProps($response);
+
+    expect($props['props']['canRequestRental'])->toBeFalse();
 });
