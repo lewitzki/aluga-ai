@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tool;
 use App\Models\User;
+use App\Services\RentalAvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ use Laravel\Fortify\Features;
 
 class ToolCatalogController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request, RentalAvailabilityService $availability): Response
     {
         $validated = $request->validate([
             'descricao' => ['sometimes', 'nullable', 'string', 'max:255'],
@@ -70,11 +71,8 @@ class ToolCatalogController extends Controller
             : null;
 
         if ($periodStart && $periodEnd && $periodStart->lt($periodEnd)) {
-            $query->whereDoesntHave('rentals', function (Builder $rentals) use ($periodStart, $periodEnd) {
-                $rentals->whereRaw(
-                    'rentals.starts_at < ? AND COALESCE(rentals.ended_at, rentals.expected_ends_at) > ?',
-                    [$periodEnd, $periodStart]
-                );
+            $query->whereDoesntHave('rentals', function (Builder $rentals) use ($availability, $periodStart, $periodEnd) {
+                $availability->applyOverlapConstraints($rentals, $periodStart, $periodEnd);
             });
         }
 

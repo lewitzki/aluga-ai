@@ -2,11 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Enums\PaymentStatus;
 use App\Enums\RentalStatus;
+use App\Models\Payment;
 use App\Models\Rental;
 use App\Models\Tool;
 use App\Models\ToolImage;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -84,6 +87,60 @@ class CatalogDemoSeeder extends Seeder
                 'hourly_rate_snapshot' => 55,
                 'estimated_total' => 800,
                 'final_total' => null,
+            ],
+        );
+
+        $now = Carbon::now();
+
+        $activeRental = Rental::query()->updateOrCreate(
+            [
+                'tool_id' => $furadeira->id,
+                'client_id' => $cliente->id,
+                'status' => RentalStatus::Active,
+            ],
+            [
+                'starts_at' => $now->copy()->subHours(3),
+                'expected_ends_at' => $now->copy()->addHours(21),
+                'ended_at' => null,
+                'hourly_rate_snapshot' => 25.5,
+                'estimated_total' => 612,
+                'final_total' => null,
+            ],
+        );
+
+        $finishedRental = Rental::query()->updateOrCreate(
+            [
+                'tool_id' => $betoneira->id,
+                'client_id' => $cliente->id,
+                'status' => RentalStatus::Finished,
+            ],
+            [
+                'starts_at' => $now->copy()->subDays(10),
+                'expected_ends_at' => $now->copy()->subDays(8),
+                'ended_at' => $now->copy()->subDays(8),
+                'hourly_rate_snapshot' => 150,
+                'estimated_total' => 7200,
+                'final_total' => 7150,
+            ],
+        );
+
+        Payment::query()->updateOrCreate(
+            ['rental_id' => $finishedRental->id],
+            [
+                'amount' => 7150,
+                'currency' => 'BRL',
+                'status' => PaymentStatus::Approved,
+                'settled_at' => $now->copy()->subDays(8),
+            ],
+        );
+
+        Payment::query()->updateOrCreate(
+            ['rental_id' => $activeRental->id],
+            [
+                'amount' => 612,
+                'currency' => 'BRL',
+                'status' => PaymentStatus::Pending,
+                'settled_at' => null,
             ],
         );
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\RentalStatus;
 use App\Models\Rental;
 use App\Models\Tool;
+use App\Services\RentalAvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,8 +13,11 @@ use Illuminate\Validation\ValidationException;
 
 class ClientRentalController extends Controller
 {
-    public function store(Request $request, Tool $tool): RedirectResponse
-    {
+    public function store(
+        Request $request,
+        Tool $tool,
+        RentalAvailabilityService $availability,
+    ): RedirectResponse {
         $validated = $request->validate([
             'starts_at' => ['required', 'date'],
             'expected_ends_at' => ['required', 'date', 'after:starts_at'],
@@ -28,11 +32,7 @@ class ClientRentalController extends Controller
         $startsAt = Carbon::parse($validated['starts_at']);
         $expectedEndsAt = Carbon::parse($validated['expected_ends_at']);
 
-        if ($tool->hasOverlappingRentalPeriod($startsAt, $expectedEndsAt)) {
-            throw ValidationException::withMessages([
-                'starts_at' => __('Já existe empréstimo agendado ou ativo que coincide com este período.'),
-            ]);
-        }
+        $availability->assertAvailable($tool, $startsAt, $expectedEndsAt);
 
         $minutes = $startsAt->diffInMinutes($expectedEndsAt);
         $hours = max($minutes / 60, 1 / 60);

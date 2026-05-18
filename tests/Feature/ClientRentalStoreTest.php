@@ -96,3 +96,45 @@ test('admin recebe 403 ao criar empréstimo pelo fluxo do cliente', function () 
         ])
         ->assertForbidden();
 });
+
+test('período imediatamente após empréstimo agendado é aceito', function () {
+    $cliente = User::factory()->cliente()->create();
+    $tool = Tool::factory()->create(['is_available' => true]);
+
+    Rental::factory()->create([
+        'tool_id' => $tool->id,
+        'client_id' => $cliente->id,
+        'starts_at' => '2031-06-01 10:00:00',
+        'expected_ends_at' => '2031-06-07 18:00:00',
+        'status' => RentalStatus::Scheduled,
+    ]);
+
+    $this->actingAs($cliente)
+        ->post(route('catalog.rentals.store', $tool), [
+            'starts_at' => '2031-06-07T18:00',
+            'expected_ends_at' => '2031-06-10T10:00',
+        ])
+        ->assertRedirect(route('cliente.dashboard'))
+        ->assertSessionHas('success');
+});
+
+test('empréstimo finalizado não impede nova solicitação no mesmo período', function () {
+    $cliente = User::factory()->cliente()->create();
+    $tool = Tool::factory()->create(['is_available' => true]);
+
+    Rental::factory()->create([
+        'tool_id' => $tool->id,
+        'client_id' => $cliente->id,
+        'starts_at' => '2031-06-01 10:00:00',
+        'expected_ends_at' => '2031-06-07 18:00:00',
+        'status' => RentalStatus::Finished,
+    ]);
+
+    $this->actingAs($cliente)
+        ->post(route('catalog.rentals.store', $tool), [
+            'starts_at' => '2031-06-03T10:00',
+            'expected_ends_at' => '2031-06-05T10:00',
+        ])
+        ->assertRedirect(route('cliente.dashboard'))
+        ->assertSessionHas('success');
+});

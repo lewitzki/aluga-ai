@@ -95,6 +95,36 @@ test('filtro disponível sim oculta ferramentas marcadas como indisponíveis', f
         ->not->toContain('Indisponível Cadastro');
 });
 
+test('ferramenta com empréstimo finalizado aparece quando período coincide', function () {
+    $admin = User::factory()->admin()->create();
+
+    $tool = Tool::factory()->create([
+        'user_id' => $admin->id,
+        'name' => 'Livre Após Finalizado',
+        'is_available' => true,
+    ]);
+
+    $cliente = User::factory()->cliente()->create();
+
+    Rental::factory()->create([
+        'tool_id' => $tool->id,
+        'client_id' => $cliente->id,
+        'starts_at' => '2030-06-01 10:00:00',
+        'expected_ends_at' => '2030-06-30 18:00:00',
+        'status' => RentalStatus::Finished,
+    ]);
+
+    $response = $this->get(route('catalog.index', [
+        'periodo_inicio' => '2030-06-10 08:00:00',
+        'periodo_fim' => '2030-06-15 20:00:00',
+    ]));
+
+    $props = inertiaProps($response);
+    $ids = collect($props['props']['tools']['data'])->pluck('id')->all();
+
+    expect($ids)->toContain($tool->id);
+});
+
 test('ferramenta com empréstimo sobreposto não aparece quando período coincide', function () {
     $admin = User::factory()->admin()->create();
 
