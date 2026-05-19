@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminToolController;
 use App\Http\Controllers\AdminToolImageController;
 use App\Http\Controllers\ClientDashboardController;
+use App\Http\Controllers\ClientRentalClosureController;
 use App\Http\Controllers\ClientRentalController;
 use App\Http\Controllers\ToolCatalogController;
 use App\Models\User;
@@ -43,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
             ->name('catalog.rentals.store');
         Route::get('cliente/dashboard', [ClientDashboardController::class, 'index'])
             ->name('cliente.dashboard');
+        Route::post('cliente/emprestimos/{rental}/fechar', [ClientRentalClosureController::class, 'store'])
+            ->name('cliente.rentals.close');
     });
 });
 

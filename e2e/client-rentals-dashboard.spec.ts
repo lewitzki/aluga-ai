@@ -54,4 +54,34 @@ test.describe('Painel do cliente — empréstimos e histórico', () => {
             page.getByTestId('client-dashboard-history'),
         ).toContainText('Betoneira Premium Catálogo');
     });
+
+    test('Cliente encerra empréstimo agendado e vê confirmação', async ({
+        page,
+    }) => {
+        await login(page, 'cliente@teste.local');
+
+        const scheduledRow = page
+            .getByTestId('client-dashboard-active')
+            .locator('tr', {
+                hasText: 'Ferramenta Alugada Período Catálogo',
+            });
+        await expect(scheduledRow).toBeVisible();
+
+        const closeButton = scheduledRow.getByRole('button', {
+            name: 'Encerrar',
+        });
+        await expect(closeButton).toBeVisible();
+
+        await Promise.all([
+            page.waitForURL(/\/cliente\/dashboard(\?.*)?$/),
+            closeButton.click(),
+        ]);
+
+        await expect(page.getByTestId('dashboard-flash-success')).toContainText(
+            'Empréstimo encerrado',
+        );
+        await expect(
+            page.getByTestId('client-dashboard-history'),
+        ).toContainText('Ferramenta Alugada Período Catálogo');
+    });
 });

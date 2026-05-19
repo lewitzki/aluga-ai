@@ -1,5 +1,7 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Form, Head, usePage } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 import {
     Card,
     CardContent,
@@ -15,6 +17,7 @@ type RentalStatus = 'scheduled' | 'active' | 'finished' | 'late';
 type ClientRentalRow = {
     id: number;
     status: RentalStatus;
+    can_close: boolean;
     starts_at: string;
     expected_ends_at: string;
     ended_at: string | null;
@@ -81,14 +84,38 @@ function statusBadgeVariant(
     }
 }
 
+function RentalCloseButton({ rentalId }: { rentalId: number }) {
+    return (
+        <Form
+            action={`/cliente/emprestimos/${rentalId}/fechar`}
+            method="post"
+            options={{ preserveScroll: true }}
+        >
+            {({ processing }) => (
+                <Button
+                    type="submit"
+                    variant="outline"
+                    size="sm"
+                    disabled={processing}
+                    data-testid={`rental-close-${rentalId}`}
+                >
+                    {processing ? <Spinner className="size-4" /> : 'Encerrar'}
+                </Button>
+            )}
+        </Form>
+    );
+}
+
 function RentalTable({
     emptyMessage,
     rentals,
+    showCloseAction = false,
     showDeadline = false,
     testId,
 }: {
     emptyMessage: string;
     rentals: ClientRentalRow[];
+    showCloseAction?: boolean;
     showDeadline?: boolean;
     testId: string;
 }) {
@@ -121,6 +148,9 @@ function RentalTable({
                         <th className="hidden px-4 py-3 font-medium lg:table-cell">
                             Valor
                         </th>
+                        {showCloseAction ? (
+                            <th className="px-4 py-3 font-medium">Ações</th>
+                        ) : null}
                     </tr>
                 </thead>
                 <tbody>
@@ -159,6 +189,17 @@ function RentalTable({
                                         '0',
                                 )}
                             </td>
+                            {showCloseAction ? (
+                                <td className="px-4 py-3">
+                                    {rental.can_close ? (
+                                        <RentalCloseButton rentalId={rental.id} />
+                                    ) : (
+                                        <span className="text-xs text-muted-foreground">
+                                            —
+                                        </span>
+                                    )}
+                                </td>
+                            ) : null}
                         </tr>
                     ))}
                 </tbody>
@@ -223,6 +264,7 @@ export default function ClientDashboard({
                     <RentalTable
                         emptyMessage="Você não possui empréstimos ativos no momento."
                         rentals={active_rentals}
+                        showCloseAction
                         showDeadline
                         testId="client-dashboard-active"
                     />

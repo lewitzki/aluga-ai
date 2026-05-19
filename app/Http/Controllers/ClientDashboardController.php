@@ -6,13 +6,14 @@ use App\Enums\PaymentStatus;
 use App\Enums\RentalStatus;
 use App\Models\Payment;
 use App\Models\Rental;
+use App\Services\RentalClosureService;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ClientDashboardController extends Controller
 {
-    public function index(): Response
+    public function index(RentalClosureService $closure): Response
     {
         $clientId = Auth::id();
 
@@ -29,12 +30,12 @@ class ClientDashboardController extends Controller
                 RentalStatus::Late,
             ], true))
             ->values()
-            ->map(fn (Rental $rental) => self::serializeRental($rental));
+            ->map(fn (Rental $rental) => self::serializeRental($rental, $closure));
 
         $historyRentals = $rentals
             ->filter(fn (Rental $rental) => $rental->status === RentalStatus::Finished)
             ->values()
-            ->map(fn (Rental $rental) => self::serializeRental($rental));
+            ->map(fn (Rental $rental) => self::serializeRental($rental, $closure));
 
         $totalPaid = Payment::query()
             ->where('status', PaymentStatus::Approved)
@@ -54,11 +55,12 @@ class ClientDashboardController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private static function serializeRental(Rental $rental): array
+    private static function serializeRental(Rental $rental, RentalClosureService $closure): array
     {
         return [
             'id' => $rental->id,
             'status' => $rental->status->value,
+            'can_close' => $closure->canClose($rental),
             'starts_at' => $rental->starts_at->toIso8601String(),
             'expected_ends_at' => $rental->expected_ends_at->toIso8601String(),
             'ended_at' => $rental->ended_at?->toIso8601String(),
