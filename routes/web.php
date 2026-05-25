@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminToolController;
 use App\Http\Controllers\AdminToolImageController;
 use App\Http\Controllers\ClientDashboardController;
@@ -27,7 +28,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     Route::middleware(['profile:'.User::PROFILE_ADMIN])->group(function () {
-        Route::inertia('admin/dashboard', 'dashboard')->name('admin.dashboard');
+        Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])
+            ->name('admin.dashboard');
 
         Route::get('admin/ferramentas', [AdminToolController::class, 'index'])->name('admin.tools.index');
         Route::get('admin/ferramentas/criar', [AdminToolController::class, 'create'])->name('admin.tools.create');
