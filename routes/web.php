@@ -7,14 +7,12 @@ use App\Http\Controllers\AdminToolImageController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\ClientRentalClosureController;
 use App\Http\Controllers\ClientRentalController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ToolCatalogController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
 
-Route::inertia('/', 'welcome', [
-    'canRegister' => Features::enabled(Features::registration()),
-])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('catalogo', [ToolCatalogController::class, 'index'])->name('catalog.index');
 Route::get('catalogo/{tool}', [ToolCatalogController::class, 'show'])->name('catalog.show');

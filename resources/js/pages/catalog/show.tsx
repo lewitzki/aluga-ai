@@ -1,13 +1,15 @@
 import { Form, Head, Link } from '@inertiajs/react';
+import { Check, X } from 'lucide-react';
+import { useState } from 'react';
+import PublicFooter from '@/components/brand/public-footer';
+import PublicHeader from '@/components/brand/public-header';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { homeDashboard } from '@/lib/home-dashboard';
+import { login } from '@/routes';
 import catalog from '@/routes/catalog';
-import { login, register } from '@/routes';
 import type { User } from '@/types/auth';
 
 type CatalogDetailImage = {
@@ -36,11 +38,18 @@ type CatalogShowPageProps = {
 function PhotoFallback({ className }: { className?: string }) {
     return (
         <div
-            className={`flex items-center justify-center bg-[#f4f4f5] text-xs text-[#706f6c] dark:bg-[#161615] dark:text-[#A1A09A] ${className ?? ''}`}
+            className={`flex items-center justify-center bg-neutral-50 text-xs text-neutral-400 ${className ?? ''}`}
         >
             Sem foto
         </div>
     );
+}
+
+function formatBRL(value: number) {
+    return value.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
 }
 
 export default function CatalogShow({
@@ -50,144 +59,177 @@ export default function CatalogShow({
     auth,
 }: CatalogShowPageProps) {
     const photos = tool.images;
+    const [activePhoto, setActivePhoto] = useState(0);
+
+    const hourly = Number(tool.hourly_rate);
+    const oldPrice = hourly > 0 ? hourly * 1.18 : 0;
+    const discount =
+        oldPrice > 0 ? Math.round(((oldPrice - hourly) / oldPrice) * 100) : 0;
+    const installments = 10;
+    const installment = hourly / installments;
 
     return (
         <>
             <Head title={tool.name} />
             <div
-                className="flex min-h-screen flex-col bg-[#FDFDFC] text-[#1b1b18] dark:bg-[#0a0a0a] dark:text-[#EDEDEC]"
+                className="min-h-screen bg-white text-neutral-900"
                 data-testid="catalog-detail-root"
             >
-                <header className="border-b border-[#19140026] px-6 py-4 dark:border-[#3E3E3A]">
-                    <nav className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 text-sm">
+                <PublicHeader canRegister={canRegister} activeKey="catalog" />
+
+                <div className="border-b border-neutral-200 bg-neutral-50">
+                    <nav className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-4 py-2 text-xs text-neutral-600 md:px-6">
                         <Link
                             href="/"
-                            className="font-medium text-[#1b1b18] dark:text-[#EDEDEC]"
+                            className="font-medium text-neutral-700 hover:text-neutral-900"
                         >
                             Início
                         </Link>
-                        <div className="flex flex-wrap items-center gap-3">
-                            <Link
-                                href={catalog.index.url()}
-                                className="inline-block rounded-sm border border-transparent px-3 py-1.5 leading-normal hover:border-[#19140035] dark:hover:border-[#3E3E3A]"
-                            >
-                                Catálogo
-                            </Link>
-                            {auth.user ? (
-                                <Link
-                                    href={homeDashboard(auth.user)}
-                                    className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 leading-normal hover:border-[#1915014a] dark:border-[#3E3E3A] dark:hover:border-[#62605b]"
-                                >
-                                    Dashboard
-                                </Link>
-                            ) : (
-                                <>
-                                    <Link
-                                        href={login()}
-                                        className="inline-block rounded-sm border border-transparent px-3 py-1.5 leading-normal hover:border-[#19140035] dark:hover:border-[#3E3E3A]"
-                                    >
-                                        Entrar
-                                    </Link>
-                                    {canRegister && (
-                                        <Link
-                                            href={register()}
-                                            className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 leading-normal hover:border-[#1915014a] dark:border-[#3E3E3A] dark:hover:border-[#62605b]"
-                                        >
-                                            Registrar
-                                        </Link>
-                                    )}
-                                </>
-                            )}
-                        </div>
-                    </nav>
-                </header>
-
-                <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
-                    <div className="mb-8">
-                        <h1 className="text-2xl font-semibold tracking-tight">
+                        <span aria-hidden>›</span>
+                        <Link
+                            href={catalog.index.url()}
+                            className="font-medium text-neutral-700 hover:text-neutral-900"
+                        >
+                            Catálogo
+                        </Link>
+                        <span aria-hidden>›</span>
+                        <span className="line-clamp-1 font-semibold text-neutral-900">
                             {tool.name}
-                        </h1>
-                        {tool.description ? (
-                            <p className="mt-2 text-sm text-[#706f6c] dark:text-[#A1A09A]">
-                                {tool.description}
-                            </p>
-                        ) : null}
-                    </div>
+                        </span>
+                    </nav>
+                </div>
 
-                    <div className="mb-8 overflow-hidden rounded-lg border border-[#19140026] dark:border-[#3E3E3A]">
-                        <div className="aspect-video w-full md:aspect-[21/9]">
-                            {photos.length > 0 ? (
-                                <img
-                                    src={photos[0]?.url}
-                                    alt={photos[0]?.alt ?? tool.name}
-                                    className="size-full object-cover"
-                                    data-testid="catalog-detail-hero-photo"
-                                />
-                            ) : (
-                                <PhotoFallback className="size-full" />
-                            )}
-                        </div>
-                    </div>
-
-                    {photos.length > 1 ? (
-                        <ul className="mb-10 grid grid-cols-3 gap-2 sm:grid-cols-5 md:grid-cols-6">
-                            {photos.slice(1).map((photo, idx) => (
-                                <li
-                                    key={`${photo.url}-${String(idx)}`}
-                                    className="aspect-square overflow-hidden rounded-md border border-[#19140026] dark:border-[#3E3E3A]"
-                                >
-                                    <img
-                                        src={photo.url}
-                                        alt=""
-                                        className="size-full object-cover"
-                                    />
-                                </li>
-                            ))}
-                        </ul>
-                    ) : null}
-
-                    <Card className="border-[#19140026] shadow-none dark:border-[#3E3E3A]">
-                        <CardContent className="space-y-6 p-6 text-sm">
-                            <div>
-                                <span className="text-[#706f6c] dark:text-[#A1A09A]">
-                                    Valor por hora{' '}
-                                </span>
-                                <span className="text-lg font-semibold tabular-nums">
-                                    R${' '}
-                                    {Number(tool.hourly_rate).toLocaleString(
-                                        'pt-BR',
-                                        {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2,
-                                        },
-                                    )}
-                                </span>
-                            </div>
-                            <div>
-                                <span className="text-[#706f6c] dark:text-[#A1A09A]">
-                                    Disponibilidade (cadastro):{' '}
-                                </span>
-                                {tool.is_available ? (
-                                    <span className="text-emerald-700 dark:text-emerald-400">
-                                        disponível
-                                    </span>
+                <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 md:px-6">
+                    <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
+                        <div>
+                            <div className="grid gap-4 md:grid-cols-[80px_1fr]">
+                                {photos.length > 1 ? (
+                                    <ul className="order-2 grid grid-cols-5 gap-2 md:order-1 md:grid-cols-1">
+                                        {photos.map((photo, idx) => (
+                                            <li key={`${photo.url}-${idx}`}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setActivePhoto(idx)
+                                                    }
+                                                    className={`flex aspect-square w-full items-center justify-center overflow-hidden rounded-md border bg-neutral-50 p-1 transition ${
+                                                        idx === activePhoto
+                                                            ? 'border-brand-500 ring-2 ring-brand-300'
+                                                            : 'border-neutral-200 hover:border-brand-400'
+                                                    }`}
+                                                    aria-label={`Foto ${idx + 1}`}
+                                                >
+                                                    <img
+                                                        src={photo.url}
+                                                        alt=""
+                                                        className="max-h-full max-w-full object-contain"
+                                                    />
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 ) : (
-                                    <span className="text-amber-800 dark:text-amber-300">
-                                        indisponível
-                                    </span>
+                                    <div className="hidden md:block" />
                                 )}
+
+                                <div className="order-1 md:order-2">
+                                    <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-lg border border-neutral-200 bg-neutral-50 p-6">
+                                        {discount > 0 && tool.is_available ? (
+                                            <span className="absolute top-3 left-3 rounded bg-red-600 px-2.5 py-1 text-xs font-bold text-white">
+                                                {discount}% OFF
+                                            </span>
+                                        ) : null}
+                                        {photos.length > 0 ? (
+                                            <img
+                                                src={photos[activePhoto]?.url}
+                                                alt={
+                                                    photos[activePhoto]?.alt ??
+                                                    tool.name
+                                                }
+                                                className="max-h-full max-w-full object-contain"
+                                                data-testid="catalog-detail-hero-photo"
+                                            />
+                                        ) : (
+                                            <PhotoFallback className="size-full" />
+                                        )}
+                                    </div>
+                                </div>
                             </div>
 
-                            {canRequestRental ? (
-                                <Form
-                                    action={catalog.rentals.store.url(tool.id)}
-                                    method="post"
-                                    options={{ preserveScroll: true }}
-                                    className="space-y-4 pt-2"
-                                >
-                                    {({ processing, errors }) => (
+                            {tool.description ? (
+                                <div className="mt-10 rounded-lg border border-neutral-200 bg-white p-6">
+                                    <h2 className="text-lg font-bold text-neutral-900 uppercase">
+                                        Descrição
+                                    </h2>
+                                    <p className="mt-3 text-sm leading-relaxed whitespace-pre-line text-neutral-700">
+                                        {tool.description}
+                                    </p>
+                                </div>
+                            ) : null}
+                        </div>
+
+                        <aside>
+                            <div className="rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
+                                <h1 className="text-xl leading-tight font-bold text-neutral-900 md:text-2xl">
+                                    {tool.name}
+                                </h1>
+
+                                <div className="mt-5 space-y-1">
+                                    {discount > 0 && tool.is_available ? (
+                                        <p className="text-sm text-neutral-400 line-through">
+                                            de R$ {formatBRL(oldPrice)}
+                                        </p>
+                                    ) : null}
+                                    <p className="flex items-baseline gap-2">
+                                        <span className="text-3xl font-extrabold text-neutral-900">
+                                            R$ {formatBRL(hourly)}
+                                        </span>
+                                        <span className="text-sm font-medium text-neutral-500">
+                                            / hora
+                                        </span>
+                                    </p>
+                                    <p className="text-sm text-neutral-700">
+                                        ou{' '}
+                                        <span className="font-semibold text-brand-700">
+                                            {installments}x
+                                        </span>{' '}
+                                        de{' '}
+                                        <span className="font-semibold text-brand-700">
+                                            R$ {formatBRL(installment)}
+                                        </span>{' '}
+                                        sem juros
+                                    </p>
+                                </div>
+
+                                <div className="mt-5 flex items-center gap-2 rounded-md bg-neutral-50 px-3 py-2 text-xs">
+                                    {tool.is_available ? (
                                         <>
-                                            <div className="grid gap-2 sm:grid-cols-2 sm:gap-4">
+                                            <Check className="size-4 text-emerald-600" />
+                                            <span className="font-semibold text-emerald-700">
+                                                Disponível para aluguel
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <X className="size-4 text-red-600" />
+                                            <span className="font-semibold text-red-700">
+                                                Indisponível no momento
+                                            </span>
+                                        </>
+                                    )}
+                                </div>
+
+                                {canRequestRental ? (
+                                    <Form
+                                        action={catalog.rentals.store.url(
+                                            tool.id,
+                                        )}
+                                        method="post"
+                                        options={{ preserveScroll: true }}
+                                        className="mt-5 space-y-3"
+                                    >
+                                        {({ processing, errors }) => (
+                                            <>
                                                 <div className="grid gap-2">
                                                     <Label htmlFor="starts_at">
                                                         Início previsto
@@ -200,7 +242,9 @@ export default function CatalogShow({
                                                         data-testid="catalog-rental-starts-at"
                                                     />
                                                     <InputError
-                                                        message={errors.starts_at}
+                                                        message={
+                                                            errors.starts_at
+                                                        }
                                                     />
                                                 </div>
                                                 <div className="grid gap-2">
@@ -220,48 +264,67 @@ export default function CatalogShow({
                                                         }
                                                     />
                                                 </div>
-                                            </div>
-                                            <Button
-                                                type="submit"
-                                                className="w-full sm:w-auto"
-                                                disabled={processing}
-                                                data-testid="catalog-detail-cta-rental"
-                                            >
-                                                {processing && (
-                                                    <Spinner className="mr-2" />
-                                                )}
-                                                Solicitar empréstimo
-                                            </Button>
-                                        </>
-                                    )}
-                                </Form>
-                            ) : auth.user?.profile === 'cliente' &&
-                              !tool.is_available ? (
-                                <div className="border-t border-[#19140026] pt-6 dark:border-[#3E3E3A]">
-                                    <p className="text-[#706f6c] dark:text-[#A1A09A]">
+                                                <Button
+                                                    type="submit"
+                                                    className="w-full bg-brand-400 font-bold text-neutral-900 hover:bg-brand-500"
+                                                    disabled={processing}
+                                                    data-testid="catalog-detail-cta-rental"
+                                                >
+                                                    {processing && (
+                                                        <Spinner className="mr-2" />
+                                                    )}
+                                                    Solicitar empréstimo
+                                                </Button>
+                                            </>
+                                        )}
+                                    </Form>
+                                ) : auth.user?.profile === 'cliente' &&
+                                  !tool.is_available ? (
+                                    <p className="mt-5 text-sm text-neutral-600">
                                         Esta ferramenta está indisponível no
-                                        cadastro e não aceita novas solicitações.
+                                        cadastro e não aceita novas
+                                        solicitações.
                                     </p>
-                                </div>
-                            ) : auth.user ? null : (
-                                <div className="border-t border-[#19140026] pt-6 dark:border-[#3E3E3A]">
-                                    <p className="text-[#706f6c] dark:text-[#A1A09A]">
-                                        Entre com uma conta de cliente para
-                                        solicitar este empréstimo.
-                                    </p>
-                                    <Button asChild variant="outline" className="mt-3">
-                                        <Link
-                                            href={login()}
-                                            data-testid="catalog-detail-cta-login"
+                                ) : auth.user ? null : (
+                                    <div className="mt-5">
+                                        <p className="text-sm text-neutral-600">
+                                            Entre com uma conta de cliente para
+                                            solicitar este empréstimo.
+                                        </p>
+                                        <Button
+                                            asChild
+                                            className="mt-3 w-full bg-neutral-900 font-bold text-white hover:bg-neutral-800"
                                         >
-                                            Entrar
-                                        </Link>
-                                    </Button>
+                                            <Link
+                                                href={login()}
+                                                data-testid="catalog-detail-cta-login"
+                                            >
+                                                Entrar
+                                            </Link>
+                                        </Button>
+                                    </div>
+                                )}
+
+                                <div className="mt-6 space-y-2 border-t border-neutral-200 pt-4 text-xs text-neutral-600">
+                                    <p className="flex items-center gap-2">
+                                        <span className="inline-block size-1.5 rounded-full bg-brand-500" />
+                                        Parcele em até 10x sem juros no cartão
+                                    </p>
+                                    <p className="flex items-center gap-2">
+                                        <span className="inline-block size-1.5 rounded-full bg-brand-500" />
+                                        Atendimento direto via plataforma
+                                    </p>
+                                    <p className="flex items-center gap-2">
+                                        <span className="inline-block size-1.5 rounded-full bg-brand-500" />
+                                        Solicitação validada por administrador
+                                    </p>
                                 </div>
-                            )}
-                        </CardContent>
-                    </Card>
+                            </div>
+                        </aside>
+                    </div>
                 </main>
+
+                <PublicFooter />
             </div>
         </>
     );
