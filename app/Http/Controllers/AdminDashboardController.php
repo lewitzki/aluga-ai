@@ -6,6 +6,7 @@ use App\Enums\RentalStatus;
 use App\Models\Rental;
 use App\Models\Tool;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -95,7 +96,7 @@ class AdminDashboardController extends Controller
     }
 
     /**
-     * @param  \Illuminate\Support\Collection<int, int|string>  $rentedToolIds
+     * @param  Collection<int, int|string>  $rentedToolIds
      * @return array<string, mixed>
      */
     private static function serializeTool(Tool $tool, $rentedToolIds): array
@@ -111,7 +112,7 @@ class AdminDashboardController extends Controller
     }
 
     /**
-     * @param  \Illuminate\Support\Collection<int, int|string>  $rentedToolIds
+     * @param  Collection<int, int|string>  $rentedToolIds
      */
     private static function resolveToolOperationalStatus(Tool $tool, $rentedToolIds): string
     {

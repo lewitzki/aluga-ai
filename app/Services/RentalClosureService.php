@@ -16,6 +16,7 @@ class RentalClosureService
     public function __construct(
         private PaymentService $paymentService,
     ) {}
+
     public function canClose(Rental $rental): bool
     {
         return $rental->ended_at === null

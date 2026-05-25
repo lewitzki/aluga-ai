@@ -1,5 +1,7 @@
 <?php
 
+use App\Services\Payment\MockPaymentGateway;
+
 return [
 
     /*
@@ -15,7 +17,7 @@ return [
     'gateway' => env('PAYMENT_GATEWAY', 'mock'),
 
     'gateways' => [
-        'mock' => \App\Services\Payment\MockPaymentGateway::class,
+        'mock' => MockPaymentGateway::class,
     ],
 
     'mock' => [

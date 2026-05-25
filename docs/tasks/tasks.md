@@ -31,7 +31,7 @@ Data de geracao: 2026-04-26
 13. [13-pagamento-mockado-e-historico.md](./13-pagamento-mockado-e-historico.md)
 14. [14-admin-painel-operacional.md](./14-admin-painel-operacional.md)
 15. [15-admin-painel-financeiro.md](./15-admin-painel-financeiro.md)
-16. [16-testes-integrados-e-criterios-de-pronto.md](./16-testes-integrados-e-criterios-de-pronto.md)
+16. [(OK)16-testes-integrados-e-criterios-de-pronto.md](./(OK)16-testes-integrados-e-criterios-de-pronto.md)
 
 ## Observacoes de priorizacao
 

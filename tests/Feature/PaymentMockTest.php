@@ -2,6 +2,7 @@
 
 use App\Contracts\PaymentGateway;
 use App\Enums\PaymentStatus;
+use App\Enums\RentalStatus;
 use App\Models\Payment;
 use App\Models\PaymentHistory;
 use App\Models\Rental;
@@ -22,7 +23,7 @@ test('fechamento gera tentativa de pagamento mockado com historico', function ()
         'client_id' => $cliente->id,
         'starts_at' => '2031-06-01 10:00:00',
         'expected_ends_at' => '2031-06-07 18:00:00',
-        'status' => \App\Enums\RentalStatus::Active,
+        'status' => RentalStatus::Active,
         'hourly_rate_snapshot' => 10,
     ]);
 
@@ -51,7 +52,7 @@ test('pagamento aprovado entra no total pago do cliente', function () {
         'client_id' => $cliente->id,
         'starts_at' => '2031-06-01 10:00:00',
         'expected_ends_at' => '2031-06-07 18:00:00',
-        'status' => \App\Enums\RentalStatus::Active,
+        'status' => RentalStatus::Active,
         'hourly_rate_snapshot' => 50,
     ]);
 
@@ -72,7 +73,7 @@ test('pagamento mockado pode falhar conforme configuracao', function () {
     $cliente = User::factory()->cliente()->create();
     $rental = Rental::factory()->create([
         'client_id' => $cliente->id,
-        'status' => \App\Enums\RentalStatus::Active,
+        'status' => RentalStatus::Active,
         'hourly_rate_snapshot' => 10,
     ]);
 
@@ -94,7 +95,7 @@ test('pagamento mockado pode permanecer pendente conforme configuracao', functio
     Config::set('payment.mock.default_status', PaymentStatus::Pending->value);
 
     $rental = Rental::factory()->create([
-        'status' => \App\Enums\RentalStatus::Active,
+        'status' => RentalStatus::Active,
         'hourly_rate_snapshot' => 10,
     ]);
 
@@ -168,5 +169,5 @@ test('payment gateway manager rejeita driver desconhecido', function () {
     expect(fn () => (new PaymentGatewayManager(
         gateways: config('payment.gateways', []),
         driver: 'inexistente',
-    ))->resolve())->toThrow(\InvalidArgumentException::class);
+    ))->resolve())->toThrow(InvalidArgumentException::class);
 });

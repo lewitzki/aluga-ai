@@ -27,8 +27,8 @@ test.describe('Painel do cliente — empréstimos e histórico', () => {
         await login(page, 'cliente@teste.local');
 
         await expect(page.getByTestId('client-dashboard-root')).toBeVisible();
-        await expect(page.getByTestId('client-dashboard-total-paid')).toContainText(
-            '7.150,00',
+        await expect(page.getByTestId('client-dashboard-total-paid')).toHaveText(
+            /R\$\s*7\.150,00/,
         );
 
         await expect(
