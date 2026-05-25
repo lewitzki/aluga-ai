@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\PaymentGateway;
+use App\Services\Payment\PaymentGatewayManager;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +17,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(PaymentGatewayManager::class, function () {
+            return new PaymentGatewayManager(
+                gateways: config('payment.gateways', []),
+                driver: (string) config('payment.gateway', 'mock'),
+            );
+        });
+
+        $this->app->bind(
+            PaymentGateway::class,
+            fn ($app) => $app->make(PaymentGatewayManager::class)->resolve(),
+        );
     }
 
     /**

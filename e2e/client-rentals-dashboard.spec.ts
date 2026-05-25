@@ -80,6 +80,9 @@ test.describe('Painel do cliente — empréstimos e histórico', () => {
         await expect(page.getByTestId('dashboard-flash-success')).toContainText(
             'Empréstimo encerrado',
         );
+        await expect(page.getByTestId('dashboard-flash-success')).toContainText(
+            'Pagamento aprovado',
+        );
         await expect(
             page.getByTestId('client-dashboard-history'),
         ).toContainText('Ferramenta Alugada Período Catálogo');

@@ -13,6 +13,9 @@ use InvalidArgumentException;
 
 class RentalClosureService
 {
+    public function __construct(
+        private PaymentService $paymentService,
+    ) {}
     public function canClose(Rental $rental): bool
     {
         return $rental->ended_at === null
@@ -82,7 +85,7 @@ class RentalClosureService
                 'final_total' => $preview['final_total'],
             ]);
 
-            Payment::query()->updateOrCreate(
+            $payment = Payment::query()->updateOrCreate(
                 ['rental_id' => $rental->id],
                 [
                     'amount' => $preview['final_total'],
@@ -92,7 +95,9 @@ class RentalClosureService
                 ],
             );
 
-            return $rental->fresh(['payment']);
+            $this->paymentService->processCharge($payment);
+
+            return $rental->fresh(['payment.histories']);
         });
     }
 }

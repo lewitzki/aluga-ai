@@ -49,7 +49,9 @@ test('cliente encerra próprio empréstimo ativo', function () {
     expect($rental->status)->toBe(RentalStatus::Finished)
         ->and($rental->ended_at)->not->toBeNull()
         ->and($rental->final_total)->not->toBeNull()
-        ->and($rental->payment->status)->toBe(PaymentStatus::Pending);
+        ->and($rental->payment->status)->toBe(PaymentStatus::Approved)
+        ->and($rental->payment->settled_at)->not->toBeNull()
+        ->and($rental->payment->histories)->toHaveCount(2);
 
     Carbon::setTestNow();
 });
@@ -81,7 +83,7 @@ test('não é possível encerrar empréstimo já finalizado', function () {
         ->assertSessionHasErrors('rental');
 });
 
-test('encerramento no prazo define status finished e pagamento pendente', function () {
+test('encerramento no prazo define status finished e pagamento aprovado', function () {
     Carbon::setTestNow('2031-06-05 12:00:00');
 
     $cliente = User::factory()->cliente()->create();
@@ -100,8 +102,10 @@ test('encerramento no prazo define status finished e pagamento pendente', functi
         ->and($closed->ended_at?->toDateTimeString())->toBe('2031-06-05 12:00:00')
         ->and((string) $closed->final_total)->toBe('980.00')
         ->and($closed->payment)->not->toBeNull()
-        ->and($closed->payment->status)->toBe(PaymentStatus::Pending)
-        ->and((string) $closed->payment->amount)->toBe('980.00');
+        ->and($closed->payment->status)->toBe(PaymentStatus::Approved)
+        ->and($closed->payment->settled_at)->not->toBeNull()
+        ->and((string) $closed->payment->amount)->toBe('980.00')
+        ->and($closed->payment->histories)->toHaveCount(2);
 
     Carbon::setTestNow();
 });

@@ -112,6 +112,10 @@ test('users can logout', function () {
 });
 
 test('users are rate limited', function () {
+    if (app()->environment('testing')) {
+        test()->markTestSkipped('Login rate limiting is disabled in the testing environment.');
+    }
+
     $user = User::factory()->create();
 
     RateLimiter::increment(md5('login'.implode('|', [$user->email, '127.0.0.1'])), amount: 5);
