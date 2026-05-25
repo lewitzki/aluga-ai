@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminFinanceDashboardController;
 use App\Http\Controllers\AdminToolController;
 use App\Http\Controllers\AdminToolImageController;
 use App\Http\Controllers\ClientDashboardController;
@@ -30,6 +31,9 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['profile:'.User::PROFILE_ADMIN])->group(function () {
         Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])
             ->name('admin.dashboard');
+
+        Route::get('admin/financeiro', [AdminFinanceDashboardController::class, 'index'])
+            ->name('admin.finance');
 
         Route::get('admin/ferramentas', [AdminToolController::class, 'index'])->name('admin.tools.index');
         Route::get('admin/ferramentas/criar', [AdminToolController::class, 'create'])->name('admin.tools.create');

@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
     BookOpen,
+    DollarSign,
     FolderGit2,
     LayoutGrid,
     Wrench,
@@ -19,6 +20,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { homeDashboard } from '@/lib/home-dashboard';
+import admin from '@/routes/admin';
 import adminTools from '@/routes/admin/tools';
 import { dashboard } from '@/routes';
 import type { NavItem, User } from '@/types';
@@ -55,6 +57,11 @@ export function AppSidebar() {
         dashboardNavItem(auth.user),
         ...(auth.user?.profile === 'admin'
             ? [
+                  {
+                      title: 'Financeiro',
+                      href: admin.finance.url(),
+                      icon: DollarSign,
+                  },
                   {
                       title: 'Ferramentas',
                       href: adminTools.index.url(),
