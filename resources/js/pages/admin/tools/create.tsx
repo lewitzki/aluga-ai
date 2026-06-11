@@ -1,6 +1,6 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import InputError from '@/components/input-error';
 import Heading from '@/components/heading';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -59,7 +59,7 @@ export default function AdminToolsCreate({ tool }: { tool: ToolDraft }) {
                                     rows={4}
                                     placeholder="Detalhes e condições de uso"
                                     defaultValue={tool.description}
-                                    className="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-24 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                                    className="flex field-sizing-content min-h-24 w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:ring-destructive/40"
                                 />
                                 <InputError message={errors.description} />
                             </div>
@@ -92,7 +92,7 @@ export default function AdminToolsCreate({ tool }: { tool: ToolDraft }) {
                                     name="is_available"
                                     value="1"
                                     defaultChecked={tool.is_available}
-                                    className="border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 size-4 rounded-[4px] shadow-xs transition-shadow outline-none focus-visible:ring-[3px]"
+                                    className="size-4 rounded-[4px] border-input text-primary shadow-xs transition-shadow outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
                                 />
                                 <Label
                                     htmlFor="is_available"
@@ -111,11 +111,12 @@ export default function AdminToolsCreate({ tool }: { tool: ToolDraft }) {
                                     type="file"
                                     multiple
                                     accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-                                    className="text-muted-foreground file:text-foreground file:me-3 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-sm file:font-medium hover:file:bg-primary/20"
+                                    className="text-muted-foreground file:me-3 file:rounded-md file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-foreground hover:file:bg-primary/20"
                                 />
                                 <InputError message={errors.images} />
-                                <p className="text-muted-foreground text-sm">
-                                    Até {MAX_IMAGES_HINT} arquivos, JPEG, PNG ou WebP, até 5 MB cada.
+                                <p className="text-sm text-muted-foreground">
+                                    Até {MAX_IMAGES_HINT} arquivos, JPEG, PNG ou
+                                    WebP, até 5 MB cada.
                                 </p>
                             </div>
 

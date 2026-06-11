@@ -1,7 +1,7 @@
 import { Form, Head, usePage } from '@inertiajs/react';
+import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
 import {
     Card,
     CardContent,
@@ -9,7 +9,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import Heading from '@/components/heading';
+import { Spinner } from '@/components/ui/spinner';
 import { dashboard } from '@/routes/cliente';
 
 type RentalStatus = 'scheduled' | 'active' | 'finished' | 'late';
@@ -178,9 +178,7 @@ function RentalTable({
                                     ? formatDateTime(rental.expected_ends_at)
                                     : rental.ended_at
                                       ? formatDateTime(rental.ended_at)
-                                      : formatDateTime(
-                                            rental.expected_ends_at,
-                                        )}
+                                      : formatDateTime(rental.expected_ends_at)}
                             </td>
                             <td className="hidden px-4 py-3 lg:table-cell">
                                 {formatCurrency(
@@ -192,7 +190,9 @@ function RentalTable({
                             {showCloseAction ? (
                                 <td className="px-4 py-3">
                                     {rental.can_close ? (
-                                        <RentalCloseButton rentalId={rental.id} />
+                                        <RentalCloseButton
+                                            rentalId={rental.id}
+                                        />
                                     ) : (
                                         <span className="text-xs text-muted-foreground">
                                             —

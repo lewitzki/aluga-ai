@@ -41,10 +41,7 @@ type Props = {
 };
 
 function dashboardNavItem(user: User | null | undefined): NavItem {
-    const href =
-        user != null
-            ? homeDashboard(user)
-            : dashboard();
+    const href = user != null ? homeDashboard(user) : dashboard();
 
     return {
         title: 'Dashboard',

@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
 async function login(
-    page: import('@playwright/test').Page,
+    page: Page,
     email: string,
     password = 'password',
 ) {

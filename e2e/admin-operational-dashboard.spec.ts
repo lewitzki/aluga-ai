@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
-async function loginAdmin(page: import('@playwright/test').Page) {
+async function loginAdmin(page: Page) {
     await page.goto('/login');
     await page.locator('#email').fill('admin@teste.local');
     await page.locator('#password').fill('password');

@@ -20,16 +20,13 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { homeDashboard } from '@/lib/home-dashboard';
+import { dashboard } from '@/routes';
 import admin from '@/routes/admin';
 import adminTools from '@/routes/admin/tools';
-import { dashboard } from '@/routes';
 import type { NavItem, User } from '@/types';
 
 function dashboardNavItem(user: User | null | undefined): NavItem {
-    const href =
-        user != null
-            ? homeDashboard(user)
-            : dashboard();
+    const href = user != null ? homeDashboard(user) : dashboard();
 
     return {
         title: 'Dashboard',

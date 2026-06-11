@@ -1,9 +1,9 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import Heading from '@/components/heading';
-import tools from '@/routes/admin/tools';
+import { Button } from '@/components/ui/button';
 import admin from '@/routes/admin';
+import tools from '@/routes/admin/tools';
 import type { LaravelPaginator } from '@/types/catalog';
 
 export type AdminToolRow = {
@@ -173,9 +173,7 @@ export default function AdminToolsIndex({ tools: toolPage }: PageProps) {
                             variant="outline"
                             size="sm"
                             disabled={!toolPage.prev_page_url}
-                            onClick={() =>
-                                goToPage(toolPage.prev_page_url)
-                            }
+                            onClick={() => goToPage(toolPage.prev_page_url)}
                         >
                             Anterior
                         </Button>
@@ -188,9 +186,7 @@ export default function AdminToolsIndex({ tools: toolPage }: PageProps) {
                             variant="outline"
                             size="sm"
                             disabled={!toolPage.next_page_url}
-                            onClick={() =>
-                                goToPage(toolPage.next_page_url)
-                            }
+                            onClick={() => goToPage(toolPage.next_page_url)}
                         >
                             Próxima
                         </Button>

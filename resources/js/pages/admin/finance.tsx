@@ -1,5 +1,6 @@
-import { FormEvent } from 'react';
 import { Head, router } from '@inertiajs/react';
+import type { FormEvent } from 'react';
+import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,7 +12,6 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import Heading from '@/components/heading';
 import admin from '@/routes/admin';
 import type { LaravelPaginator } from '@/types/catalog';
 
@@ -129,7 +129,11 @@ export default function AdminFinanceDashboard({
     }
 
     function clearFilters() {
-        router.get(admin.finance.url(), {}, { preserveState: true, replace: true });
+        router.get(
+            admin.finance.url(),
+            {},
+            { preserveState: true, replace: true },
+        );
     }
 
     function goToPage(url: string | null) {
@@ -228,7 +232,9 @@ export default function AdminFinanceDashboard({
                             data-testid="admin-finance-filters"
                         >
                             <div className="flex flex-col gap-2">
-                                <Label htmlFor="status">Status do pagamento</Label>
+                                <Label htmlFor="status">
+                                    Status do pagamento
+                                </Label>
                                 <select
                                     id="status"
                                     name="status"

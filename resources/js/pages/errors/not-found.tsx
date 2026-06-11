@@ -14,7 +14,8 @@ export default function NotFound() {
                         Esta página não existe
                     </h1>
                     <p className="mt-2 text-sm text-[#706f6c] dark:text-[#A1A09A]">
-                        O endereço pode estar incorreto ou o conteúdo foi removido.
+                        O endereço pode estar incorreto ou o conteúdo foi
+                        removido.
                     </p>
                     <div className="mt-8 flex flex-wrap justify-center gap-3">
                         <Link

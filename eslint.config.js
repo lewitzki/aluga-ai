@@ -107,6 +107,7 @@ export default [
     },
     {
         ignores: [
+            'e2e/global-setup.cjs',
             'vendor',
             'node_modules',
             'public',

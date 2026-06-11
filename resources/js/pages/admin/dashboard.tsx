@@ -1,5 +1,7 @@
-import { FormEvent, useEffect, useState } from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
+import type { FormEvent } from 'react';
+import { useEffect, useState } from 'react';
+import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,7 +13,6 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import Heading from '@/components/heading';
 import admin from '@/routes/admin';
 
 type RentalStatus = 'scheduled' | 'active' | 'late';
@@ -104,18 +105,19 @@ function formatElapsedDuration(startsAt: string): string {
 }
 
 function useElapsedDuration(startsAt: string): string {
-    const [elapsed, setElapsed] = useState(() => formatElapsedDuration(startsAt));
+    const [tick, setTick] = useState(0);
 
     useEffect(() => {
-        setElapsed(formatElapsedDuration(startsAt));
         const intervalId = window.setInterval(() => {
-            setElapsed(formatElapsedDuration(startsAt));
+            setTick((current) => current + 1);
         }, 60_000);
 
         return () => window.clearInterval(intervalId);
     }, [startsAt]);
 
-    return elapsed;
+    void tick;
+
+    return formatElapsedDuration(startsAt);
 }
 
 function rentalBadgeVariant(
@@ -183,7 +185,11 @@ export default function AdminDashboard({
     }
 
     function clearFilters() {
-        router.get(admin.dashboard.url(), {}, { preserveState: true, replace: true });
+        router.get(
+            admin.dashboard.url(),
+            {},
+            { preserveState: true, replace: true },
+        );
     }
 
     return (
@@ -212,7 +218,9 @@ export default function AdminDashboard({
                     <Card data-testid="admin-dashboard-summary-total">
                         <CardHeader className="pb-2">
                             <CardDescription>Cadastradas</CardDescription>
-                            <CardTitle className="text-3xl">{summary.total}</CardTitle>
+                            <CardTitle className="text-3xl">
+                                {summary.total}
+                            </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="text-sm text-muted-foreground">
@@ -238,7 +246,9 @@ export default function AdminDashboard({
                     <Card data-testid="admin-dashboard-summary-rented">
                         <CardHeader className="pb-2">
                             <CardDescription>Emprestadas</CardDescription>
-                            <CardTitle className="text-3xl">{summary.rented}</CardTitle>
+                            <CardTitle className="text-3xl">
+                                {summary.rented}
+                            </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="text-sm text-muted-foreground">
@@ -273,14 +283,22 @@ export default function AdminDashboard({
                                     data-testid="admin-filter-tool-state"
                                 >
                                     <option value="todos">Todos</option>
-                                    <option value="disponivel">Disponível</option>
-                                    <option value="emprestada">Emprestada</option>
-                                    <option value="indisponivel">Indisponível</option>
+                                    <option value="disponivel">
+                                        Disponível
+                                    </option>
+                                    <option value="emprestada">
+                                        Emprestada
+                                    </option>
+                                    <option value="indisponivel">
+                                        Indisponível
+                                    </option>
                                 </select>
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                <Label htmlFor="status">Status do empréstimo</Label>
+                                <Label htmlFor="status">
+                                    Status do empréstimo
+                                </Label>
                                 <select
                                     id="status"
                                     name="status"
@@ -324,7 +342,9 @@ export default function AdminDashboard({
                 </Card>
 
                 <section className="flex flex-col gap-3">
-                    <h3 className="text-base font-medium">Ferramentas por estado</h3>
+                    <h3 className="text-base font-medium">
+                        Ferramentas por estado
+                    </h3>
                     {tools.length === 0 ? (
                         <p
                             className="text-sm text-muted-foreground"
@@ -340,8 +360,12 @@ export default function AdminDashboard({
                             <table className="w-full text-left text-sm">
                                 <thead className="border-b bg-muted/50">
                                     <tr>
-                                        <th className="px-4 py-3 font-medium">Nome</th>
-                                        <th className="px-4 py-3 font-medium">Estado</th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Nome
+                                        </th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Estado
+                                        </th>
                                         <th className="hidden px-4 py-3 font-medium sm:table-cell">
                                             Cadastro
                                         </th>
@@ -365,7 +389,8 @@ export default function AdminDashboard({
                                                 >
                                                     {
                                                         toolStatusLabels[
-                                                            tool.operational_status
+                                                            tool
+                                                                .operational_status
                                                         ]
                                                     }
                                                 </Badge>
@@ -392,7 +417,8 @@ export default function AdminDashboard({
                             className="text-sm text-muted-foreground"
                             data-testid="admin-dashboard-rentals-empty"
                         >
-                            Nenhum empréstimo ativo encontrado com os filtros atuais.
+                            Nenhum empréstimo ativo encontrado com os filtros
+                            atuais.
                         </p>
                     ) : (
                         <div
@@ -408,7 +434,9 @@ export default function AdminDashboard({
                                         <th className="hidden px-4 py-3 font-medium sm:table-cell">
                                             Cliente
                                         </th>
-                                        <th className="px-4 py-3 font-medium">Status</th>
+                                        <th className="px-4 py-3 font-medium">
+                                            Status
+                                        </th>
                                         <th className="px-4 py-3 font-medium">
                                             Tempo corrido
                                         </th>

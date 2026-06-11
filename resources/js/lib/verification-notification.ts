@@ -1,8 +1,8 @@
-import {
-    queryParams,
-    type RouteDefinition,
-    type RouteFormDefinition,
-    type RouteQueryOptions,
+import { queryParams } from '@/wayfinder';
+import type {
+    RouteDefinition,
+    RouteFormDefinition,
+    RouteQueryOptions,
 } from '@/wayfinder';
 
 /** Fortify POST `verification.send` quando a feature de email verificacao esta desligada na config. */
@@ -21,14 +21,14 @@ send.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 });
 
-const sendForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const sendForm = (
+    options?: RouteQueryOptions,
+): RouteFormDefinition<'post'> => ({
     action: send.url(options),
     method: 'post',
 });
 
-sendForm.post = (
-    options?: RouteQueryOptions,
-): RouteFormDefinition<'post'> => ({
+sendForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: send.url(options),
     method: 'post',
 });
