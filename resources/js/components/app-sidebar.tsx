@@ -19,7 +19,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { homeDashboard } from '@/lib/home-dashboard';
+import { homeDashboard, logoHome } from '@/lib/home-dashboard';
 import { dashboard } from '@/routes';
 import admin from '@/routes/admin';
 import adminTools from '@/routes/admin/tools';
@@ -74,10 +74,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link
-                                href={dashboardNavItem(auth.user).href}
-                                prefetch
-                            >
+                            <Link href={logoHome(auth.user)} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
