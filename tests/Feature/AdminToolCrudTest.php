@@ -65,6 +65,29 @@ test('admin cria ferramenta', function () {
     ]);
 });
 
+test('admin acessa página de edição com imagens e status operacional', function () {
+    $admin = User::factory()->admin()->create();
+    $tool = Tool::factory()->create([
+        'user_id' => $admin->id,
+        'name' => 'Serra Circular',
+        'hourly_rate' => 25.5,
+        'is_available' => true,
+    ]);
+
+    $response = $this->actingAs($admin)->get(route('admin.tools.edit', $tool));
+
+    $response->assertOk();
+
+    $props = $response->viewData('page')['props']['tool'] ?? null;
+
+    expect($props)->toBeArray()
+        ->and($props['name'])->toBe('Serra Circular')
+        ->and($props['hourly_rate'])->toBe('25.50')
+        ->and($props['operational_status'])->toBe('disponivel')
+        ->and($props['has_active_rental'])->toBeFalse()
+        ->and($props['catalog_url'])->toContain('/catalogo/'.$tool->id);
+});
+
 test('admin atualiza ferramenta sem afetar vínculo com empréstimo', function () {
     $admin = User::factory()->admin()->create();
     $cliente = User::factory()->cliente()->create();

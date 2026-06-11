@@ -6,12 +6,22 @@ import admin from '@/routes/admin';
 import tools from '@/routes/admin/tools';
 import type { LaravelPaginator } from '@/types/catalog';
 
+type ToolOperationalStatus = 'disponivel' | 'emprestada' | 'indisponivel';
+
 export type AdminToolRow = {
     id: number;
     name: string;
     description: string | null;
     hourly_rate: string;
     is_available: boolean;
+    thumbnail_url: string | null;
+    operational_status: ToolOperationalStatus;
+};
+
+const operationalStatusLabels: Record<ToolOperationalStatus, string> = {
+    disponivel: 'Disponível',
+    emprestada: 'Emprestada',
+    indisponivel: 'Indisponível',
 };
 
 type PageProps = {
@@ -64,6 +74,9 @@ export default function AdminToolsIndex({ tools: toolPage }: PageProps) {
                         <table className="w-full text-left text-sm">
                             <thead className="border-b bg-muted/50">
                                 <tr>
+                                    <th className="hidden w-16 px-4 py-3 font-medium sm:table-cell">
+                                        Foto
+                                    </th>
                                     <th className="px-4 py-3 font-medium">
                                         Nome
                                     </th>
@@ -71,7 +84,7 @@ export default function AdminToolsIndex({ tools: toolPage }: PageProps) {
                                         Valor/hora
                                     </th>
                                     <th className="hidden px-4 py-3 font-medium md:table-cell">
-                                        Disponível
+                                        Status
                                     </th>
                                     <th className="px-4 py-3 text-right font-medium">
                                         Ações
@@ -81,6 +94,19 @@ export default function AdminToolsIndex({ tools: toolPage }: PageProps) {
                             <tbody className="divide-y">
                                 {toolPage.data.map((tool) => (
                                     <tr key={tool.id}>
+                                        <td className="hidden px-4 py-3 align-top sm:table-cell">
+                                            {tool.thumbnail_url ? (
+                                                <img
+                                                    src={tool.thumbnail_url}
+                                                    alt=""
+                                                    className="size-12 rounded-md border border-border object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex size-12 items-center justify-center rounded-md border border-dashed border-border bg-muted/40 text-[10px] text-muted-foreground">
+                                                    Sem foto
+                                                </div>
+                                            )}
+                                        </td>
                                         <td className="px-4 py-3 align-top">
                                             <div className="font-medium">
                                                 {tool.name}
@@ -99,9 +125,11 @@ export default function AdminToolsIndex({ tools: toolPage }: PageProps) {
                                                     maximumFractionDigits: 2,
                                                 })}{' '}
                                                 / h ·{' '}
-                                                {tool.is_available
-                                                    ? 'disponível'
-                                                    : 'indisponível'}
+                                                {
+                                                    operationalStatusLabels[
+                                                        tool.operational_status
+                                                    ]
+                                                }
                                             </div>
                                         </td>
                                         <td className="hidden px-4 py-3 text-muted-foreground sm:table-cell">
@@ -114,15 +142,23 @@ export default function AdminToolsIndex({ tools: toolPage }: PageProps) {
                                             })}
                                         </td>
                                         <td className="hidden px-4 py-3 md:table-cell">
-                                            {tool.is_available ? (
-                                                <span className="text-emerald-700 dark:text-emerald-400">
-                                                    Sim
-                                                </span>
-                                            ) : (
-                                                <span className="text-amber-800 dark:text-amber-300">
-                                                    Não
-                                                </span>
-                                            )}
+                                            <span
+                                                className={
+                                                    tool.operational_status ===
+                                                    'disponivel'
+                                                        ? 'text-emerald-700 dark:text-emerald-400'
+                                                        : tool.operational_status ===
+                                                            'emprestada'
+                                                          ? 'text-blue-700 dark:text-blue-300'
+                                                          : 'text-amber-800 dark:text-amber-300'
+                                                }
+                                            >
+                                                {
+                                                    operationalStatusLabels[
+                                                        tool.operational_status
+                                                    ]
+                                                }
+                                            </span>
                                         </td>
                                         <td className="px-4 py-3 text-right">
                                             <div className="flex justify-end gap-1">

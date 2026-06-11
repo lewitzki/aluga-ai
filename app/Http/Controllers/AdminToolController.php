@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RentalStatus;
 use App\Http\Requests\Admin\StoreToolRequest;
 use App\Http\Requests\Admin\UpdateToolRequest;
+use App\Models\Rental;
 use App\Models\Tool;
 use App\Models\ToolImage;
 use App\Services\ToolImageUploader;
@@ -18,11 +20,17 @@ class AdminToolController extends Controller
 {
     public function index(): Response
     {
+        $rentedToolIds = Rental::query()
+            ->where('status', '!=', RentalStatus::Finished)
+            ->distinct()
+            ->pluck('tool_id');
+
         $tools = Tool::query()
             ->where('user_id', Auth::id())
+            ->with(['images' => fn ($q) => $q->orderBy('sort_order')->limit(1)])
             ->orderBy('name')
             ->paginate(15)
-            ->through(fn (Tool $t) => self::serializeRow($t));
+            ->through(fn (Tool $t) => self::serializeRow($t, $rentedToolIds));
 
         return Inertia::render('admin/tools/index', [
             'tools' => $tools,
@@ -86,8 +94,10 @@ class AdminToolController extends Controller
 
         $tool->load(['images' => fn ($q) => $q->orderBy('sort_order')]);
 
+        $hasActiveRental = $tool->hasNonFinishedRentals();
+
         return Inertia::render('admin/tools/edit', [
-            'tool' => self::serializeForm($tool),
+            'tool' => self::serializeForm($tool, $hasActiveRental),
         ]);
     }
 
@@ -135,23 +145,32 @@ class AdminToolController extends Controller
     }
 
     /**
+     * @param  \Illuminate\Support\Collection<int, int|string>  $rentedToolIds
      * @return array<string, mixed>
      */
-    private static function serializeRow(Tool $tool): array
+    private static function serializeRow(Tool $tool, $rentedToolIds): array
     {
+        $first = $tool->images->first();
+        $thumbnailUrl = null;
+        if ($first && $first->path) {
+            $thumbnailUrl = Storage::disk('public')->url($first->path);
+        }
+
         return [
             'id' => $tool->id,
             'name' => $tool->name,
             'description' => $tool->description,
             'hourly_rate' => (string) $tool->hourly_rate,
             'is_available' => $tool->is_available,
+            'thumbnail_url' => $thumbnailUrl,
+            'operational_status' => self::resolveOperationalStatus($tool, $rentedToolIds),
         ];
     }
 
     /**
      * @return array<string, mixed>
      */
-    private static function serializeForm(Tool $tool): array
+    private static function serializeForm(Tool $tool, bool $hasActiveRental): array
     {
         $images = [];
         foreach ($tool->images as $image) {
@@ -161,8 +180,13 @@ class AdminToolController extends Controller
             $images[] = [
                 'id' => $image->id,
                 'url' => Storage::disk('public')->url($image->path),
+                'alt' => $tool->name,
             ];
         }
+
+        $rentedToolIds = $hasActiveRental
+            ? collect([$tool->id])
+            : collect();
 
         return [
             'id' => $tool->id,
@@ -172,6 +196,25 @@ class AdminToolController extends Controller
             'is_available' => $tool->is_available,
             'images' => $images,
             'max_images' => ToolImage::MAX_PER_TOOL,
+            'operational_status' => self::resolveOperationalStatus($tool, $rentedToolIds),
+            'has_active_rental' => $hasActiveRental,
+            'catalog_url' => route('catalog.show', ['tool' => $tool]),
         ];
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, int|string>  $rentedToolIds
+     */
+    private static function resolveOperationalStatus(Tool $tool, $rentedToolIds): string
+    {
+        if ($rentedToolIds->contains($tool->id)) {
+            return 'emprestada';
+        }
+
+        if (! $tool->is_available) {
+            return 'indisponivel';
+        }
+
+        return 'disponivel';
     }
 }
