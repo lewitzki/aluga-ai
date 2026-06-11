@@ -34,12 +34,12 @@ test.describe('Catálogo público', () => {
     }) => {
         await page.goto('/catalogo');
 
-        await page.getByTestId('catalog-filter-descricao').fill('furadeira_catalogo_token_xyz');
+        await page.getByTestId('catalog-filter-descricao').fill('maquina_solda_arco_250a_inversora');
         await page.getByTestId('catalog-apply-filters').click();
 
-        await expect(page).toHaveURL(/descricao=furadeira_catalogo_token_xyz/);
-        await expect(page.getByText('Furadeira Catálogo E2E')).toBeVisible();
-        await expect(page.getByText('Betoneira Premium Catálogo')).toHaveCount(0);
+        await expect(page).toHaveURL(/descricao=maquina_solda_arco_250a_inversora/);
+        await expect(page.getByText('Máquina de Solda Arco 250A')).toBeVisible();
+        await expect(page.getByText('Kit Instalação Elétrica Residencial')).toHaveCount(0);
     });
 
     test('disponível sim oculta ferramenta indisponível no cadastro', async ({
@@ -50,10 +50,10 @@ test.describe('Catálogo público', () => {
         await page.selectOption('[data-testid="catalog-filter-disponivel"]', 'sim');
         await page.getByTestId('catalog-apply-filters').click();
 
-        await expect(page.getByText('Ferramenta Indisponível Catálogo')).toHaveCount(
+        await expect(page.getByText('Martelo Unha 500g')).toHaveCount(
             0,
         );
-        await expect(page.getByText('Furadeira Catálogo E2E')).toBeVisible();
+        await expect(page.getByText('Máquina de Solda Arco 250A')).toBeVisible();
     });
 
     test('período com empréstimo sobreposto oculta ferramenta ocupada', async ({
@@ -69,9 +69,9 @@ test.describe('Catálogo público', () => {
         await expect(page).toHaveURL(/periodo_fim=/);
 
         await expect(
-            page.getByText('Ferramenta Alugada Período Catálogo'),
+            page.getByText('Esmerilhadeira Angular 4½ Pol'),
         ).toHaveCount(0);
-        await expect(page.getByText('Furadeira Catálogo E2E')).toBeVisible();
+        await expect(page.getByText('Máquina de Solda Arco 250A')).toBeVisible();
     });
 
     test('paginação aparece quando há mais de uma página', async ({ page }) => {
@@ -92,18 +92,18 @@ test.describe('Catálogo público', () => {
         await page.goto('/catalogo');
         await page
             .getByTestId('catalog-filter-descricao')
-            .fill('furadeira_catalogo_token_xyz');
+            .fill('maquina_solda_arco_250a_inversora');
         await page.getByTestId('catalog-apply-filters').click();
         await page
             .getByRole('link', {
-                name: /Ver detalhes de Furadeira Catálogo E2E/i,
+                name: /Ver detalhes de Máquina de Solda Arco 250A/i,
             })
             .click();
 
         await expect(page).toHaveURL(/\/catalogo\/\d+/);
         await expect(page.getByTestId('catalog-detail-root')).toBeVisible();
         await expect(
-            page.getByRole('heading', { name: /Furadeira Catálogo E2E/i }),
+            page.getByRole('heading', { name: /Máquina de Solda Arco 250A/i }),
         ).toBeVisible();
         await expect(page.getByTestId('catalog-detail-hero-photo')).toBeVisible();
         await expect(page.getByTestId('catalog-detail-cta-login')).toBeVisible();
@@ -125,11 +125,11 @@ test.describe('Catálogo público', () => {
         await page.goto('/catalogo');
         await page
             .getByTestId('catalog-filter-descricao')
-            .fill('furadeira_catalogo_token_xyz');
+            .fill('maquina_solda_arco_250a_inversora');
         await page.getByTestId('catalog-apply-filters').click();
         await page
             .getByRole('link', {
-                name: /Ver detalhes de Furadeira Catálogo E2E/i,
+                name: /Ver detalhes de Máquina de Solda Arco 250A/i,
             })
             .click();
 
@@ -143,11 +143,11 @@ test.describe('Catálogo público', () => {
         await page.goto('/catalogo');
         await page
             .getByTestId('catalog-filter-descricao')
-            .fill('furadeira_catalogo_token_xyz');
+            .fill('maquina_solda_arco_250a_inversora');
         await page.getByTestId('catalog-apply-filters').click();
         await page
             .getByRole('link', {
-                name: /Ver detalhes de Furadeira Catálogo E2E/i,
+                name: /Ver detalhes de Máquina de Solda Arco 250A/i,
             })
             .click();
 

@@ -22,12 +22,12 @@ test.describe('Fluxo completo do cliente (E2E)', () => {
         await page.goto('/catalogo');
         await page
             .getByTestId('catalog-filter-descricao')
-            .fill('furadeira_catalogo_token_xyz');
+            .fill('maquina_solda_arco_250a_inversora');
         await page.getByTestId('catalog-apply-filters').click();
 
         await page
             .getByRole('link', {
-                name: /Ver detalhes de Furadeira Catálogo E2E/i,
+                name: /Ver detalhes de Máquina de Solda Arco 250A/i,
             })
             .click();
 
@@ -51,7 +51,7 @@ test.describe('Fluxo completo do cliente (E2E)', () => {
 
         const scheduledRow = page
             .getByTestId('client-dashboard-active')
-            .locator('tr', { hasText: 'Furadeira Catálogo E2E' });
+            .locator('tr', { hasText: 'Máquina de Solda Arco 250A' });
         await expect(scheduledRow).toBeVisible();
 
         const closeButton = scheduledRow.getByRole('button', {
@@ -68,6 +68,6 @@ test.describe('Fluxo completo do cliente (E2E)', () => {
         );
         await expect(
             page.getByTestId('client-dashboard-history'),
-        ).toContainText('Furadeira Catálogo E2E');
+        ).toContainText('Máquina de Solda Arco 250A');
     });
 });

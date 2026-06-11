@@ -16,7 +16,7 @@ test.describe('Fluxo completo do admin (E2E)', () => {
     test('login, CRUD de ferramenta e painéis operacional e financeiro', async ({
         page,
     }) => {
-        const toolName = `Ferramenta E2E ${Date.now()}`;
+        const toolName = `Lixadeira Orbital ${Date.now()}`;
         const updatedName = `${toolName} Revisada`;
 
         await loginAdmin(page);
@@ -31,7 +31,7 @@ test.describe('Fluxo completo do admin (E2E)', () => {
         await expect(page).toHaveURL(/\/admin\/ferramentas\/criar/);
 
         await page.locator('#name').fill(toolName);
-        await page.locator('#description').fill('Criada no fluxo E2E integrado');
+        await page.locator('#description').fill('Lixadeira orbital 1/4 de folha para acabamento em madeira');
         await page.locator('#hourly_rate').fill('42.50');
 
         await Promise.all([

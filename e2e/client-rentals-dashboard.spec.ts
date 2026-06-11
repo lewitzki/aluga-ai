@@ -37,13 +37,13 @@ test.describe('Painel do cliente — empréstimos e histórico', () => {
         ).toBeVisible();
         await expect(
             page.getByTestId('client-dashboard-active'),
-        ).toContainText('Furadeira Catálogo E2E');
+        ).toContainText('Máquina de Solda Arco 250A');
         await expect(
             page.getByTestId('client-dashboard-active'),
         ).toContainText('Ativo');
         await expect(
             page.getByTestId('client-dashboard-active'),
-        ).toContainText('Ferramenta Alugada Período Catálogo');
+        ).toContainText('Esmerilhadeira Angular 4½ Pol');
         await expect(
             page.getByTestId('client-dashboard-active'),
         ).toContainText('Agendado');
@@ -53,7 +53,7 @@ test.describe('Painel do cliente — empréstimos e histórico', () => {
         ).toBeVisible();
         await expect(
             page.getByTestId('client-dashboard-history'),
-        ).toContainText('Betoneira Premium Catálogo');
+        ).toContainText('Kit Instalação Elétrica Residencial');
     });
 
     test('Cliente encerra empréstimo agendado e vê confirmação', async ({
@@ -64,7 +64,7 @@ test.describe('Painel do cliente — empréstimos e histórico', () => {
         const scheduledRow = page
             .getByTestId('client-dashboard-active')
             .locator('tr', {
-                hasText: 'Ferramenta Alugada Período Catálogo',
+                hasText: 'Esmerilhadeira Angular 4½ Pol',
             });
         await expect(scheduledRow).toBeVisible();
 
@@ -86,6 +86,6 @@ test.describe('Painel do cliente — empréstimos e histórico', () => {
         );
         await expect(
             page.getByTestId('client-dashboard-history'),
-        ).toContainText('Ferramenta Alugada Período Catálogo');
+        ).toContainText('Esmerilhadeira Angular 4½ Pol');
     });
 });

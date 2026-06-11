@@ -1,0 +1,10 @@
+Imagens de exemplo (Unsplash License — https://unsplash.com/license):
+- solda-arco.jpg — soldagem eletrodo revestido / arco elétrico
+- serra-circular.jpg — serra circular cortando madeira (DeWalt)
+- instalacao-eletrica.jpg — eletricista em instalação residencial
+- planta-arquitetonica.jpg — planta arquitetônica e escalímetro
+- martelo.jpg — martelo unha com cabo emborrachado
+- kit-artesanato.jpg — base de corte, tesoura e materiais de artesanato
+- esmerilhadeira.jpg — esmerilhadeira angular em corte de metal
+
+Redistribuição: arquivos redimensionados e servidos localmente pelo aplicativo.

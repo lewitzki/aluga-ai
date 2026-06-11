@@ -32,11 +32,11 @@ test.describe('Painel operacional do admin', () => {
         await loginAdmin(page);
 
         await page.getByTestId('admin-filter-rental-status').selectOption('active');
-        await page.getByTestId('admin-filter-search').fill('Furadeira');
+        await page.getByTestId('admin-filter-search').fill('Solda');
         await page.getByRole('button', { name: 'Aplicar filtros' }).click();
 
         await expect(page).toHaveURL(/status=active/);
-        await expect(page).toHaveURL(/q=Furadeira/);
+        await expect(page).toHaveURL(/q=Solda/);
         await expect(page.getByTestId('admin-dashboard-rentals')).toBeVisible();
     });
 

@@ -106,7 +106,7 @@ export default function Welcome({
                                 />
                             ) : (
                                 <div className="text-center text-sm text-neutral-700">
-                                    Catálogo em construção
+                                    Nenhuma ferramenta em destaque
                                 </div>
                             )}
                         </div>
