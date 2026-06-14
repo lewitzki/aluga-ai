@@ -37,7 +37,7 @@ class PalacioCatalogSeeder extends Seeder
             $tool = Tool::query()->updateOrCreate(
                 ['name' => $product['name']],
                 [
-                    'user_id' => $admin->id,
+                    'owner_id' => $admin->id,
                     'description' => $product['description'],
                     'hourly_rate' => $product['hourly_rate'],
                     'is_available' => true,

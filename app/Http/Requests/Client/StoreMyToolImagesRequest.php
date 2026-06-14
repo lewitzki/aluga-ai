@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Client;
 
 use App\Models\Tool;
 use App\Models\ToolImage;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreToolImagesRequest extends FormRequest
+class StoreMyToolImagesRequest extends FormRequest
 {
     public function authorize(): bool
     {

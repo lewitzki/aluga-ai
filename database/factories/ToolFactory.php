@@ -43,7 +43,7 @@ class ToolFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory()->admin(),
+            'owner_id' => User::factory()->admin(),
             'name' => fake()->unique()->randomElement(self::catalogToolNames()),
             'description' => fake()->optional()->paragraph(),
             'hourly_rate' => fake()->randomFloat(2, 5, 120),

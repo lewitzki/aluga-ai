@@ -32,7 +32,7 @@ test('fluxo completo admin: CRUD ferramenta e painéis operacional e financeiro'
         ->assertRedirect(route('admin.tools.index'));
 
     $tool = Tool::query()
-        ->where('user_id', $admin->id)
+        ->where('owner_id', $admin->id)
         ->where('name', 'Martelo Fluxo Admin')
         ->firstOrFail();
 

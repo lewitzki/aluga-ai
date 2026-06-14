@@ -42,7 +42,7 @@ class User extends Authenticatable
      */
     public function tools(): HasMany
     {
-        return $this->hasMany(Tool::class, 'user_id');
+        return $this->hasMany(Tool::class, 'owner_id');
     }
 
     /**

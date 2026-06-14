@@ -16,7 +16,7 @@ test('fluxo completo cliente: registro, catálogo, empréstimo e pagamento mocka
 
     $admin = User::factory()->admin()->create();
     $tool = Tool::factory()->create([
-        'user_id' => $admin->id,
+        'owner_id' => $admin->id,
         'name' => 'Serra Integração Fluxo',
         'description' => 'token_integracao_cliente_xyz',
         'hourly_rate' => 20,
@@ -100,7 +100,7 @@ test('fluxo completo cliente via login: catálogo, empréstimo e pagamento mocka
 
     $admin = User::factory()->admin()->create();
     $tool = Tool::factory()->create([
-        'user_id' => $admin->id,
+        'owner_id' => $admin->id,
         'name' => 'Compactador Fluxo Login',
         'hourly_rate' => 15,
         'is_available' => true,

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['user_id', 'name', 'description', 'hourly_rate', 'is_available'])]
+#[Fillable(['owner_id', 'name', 'description', 'hourly_rate', 'is_available'])]
 class Tool extends Model
 {
     /** @use HasFactory<ToolFactory> */
@@ -27,9 +27,9 @@ class Tool extends Model
         ];
     }
 
-    public function creator(): BelongsTo
+    public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     /**

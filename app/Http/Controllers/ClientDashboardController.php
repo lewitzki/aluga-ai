@@ -6,6 +6,7 @@ use App\Enums\PaymentStatus;
 use App\Enums\RentalStatus;
 use App\Models\Payment;
 use App\Models\Rental;
+use App\Models\Tool;
 use App\Services\RentalClosureService;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -42,10 +43,15 @@ class ClientDashboardController extends Controller
             ->whereHas('rental', fn ($query) => $query->where('client_id', $clientId))
             ->sum('amount');
 
+        $toolsCount = Tool::query()
+            ->where('owner_id', $clientId)
+            ->count();
+
         return Inertia::render('cliente/dashboard', [
             'summary' => [
                 'total_paid' => number_format((float) $totalPaid, 2, '.', ''),
                 'currency' => 'BRL',
+                'tools_count' => $toolsCount,
             ],
             'active_rentals' => $activeRentals,
             'history_rentals' => $historyRentals,

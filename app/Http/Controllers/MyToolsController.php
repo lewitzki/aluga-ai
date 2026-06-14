@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\RentalStatus;
-use App\Http\Requests\Admin\StoreToolRequest;
-use App\Http\Requests\Admin\UpdateToolRequest;
+use App\Http\Requests\Client\StoreMyToolRequest;
+use App\Http\Requests\Client\UpdateMyToolRequest;
 use App\Models\Rental;
 use App\Models\Tool;
 use App\Models\ToolImage;
@@ -16,10 +16,12 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Throwable;
 
-class AdminToolController extends Controller
+class MyToolsController extends Controller
 {
     public function index(): Response
     {
+        $this->authorize('viewAny', Tool::class);
+
         $rentedToolIds = Rental::query()
             ->where('status', '!=', RentalStatus::Finished)
             ->distinct()
@@ -32,14 +34,16 @@ class AdminToolController extends Controller
             ->paginate(15)
             ->through(fn (Tool $t) => self::serializeRow($t, $rentedToolIds));
 
-        return Inertia::render('admin/tools/index', [
+        return Inertia::render('MyTools/Index', [
             'tools' => $tools,
         ]);
     }
 
     public function create(): Response
     {
-        return Inertia::render('admin/tools/create', [
+        $this->authorize('create', Tool::class);
+
+        return Inertia::render('MyTools/Create', [
             'tool' => [
                 'name' => '',
                 'description' => '',
@@ -49,14 +53,14 @@ class AdminToolController extends Controller
         ]);
     }
 
-    public function store(StoreToolRequest $request): RedirectResponse
+    public function store(StoreMyToolRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
         $tool = Tool::query()->create([
             'owner_id' => Auth::id(),
             'name' => $data['name'],
-            'description' => $data['description'] ?? null,
+            'description' => $data['description'],
             'hourly_rate' => $data['hourly_rate'],
             'is_available' => $data['is_available'],
         ]);
@@ -77,7 +81,7 @@ class AdminToolController extends Controller
                 'message' => 'Ferramenta cadastrada, mas não foi possível salvar uma ou mais imagens. Você pode enviá-las ao editar o cadastro.',
             ]);
 
-            return to_route('admin.tools.edit', ['tool' => $tool]);
+            return to_route('my-tools.edit', ['tool' => $tool]);
         }
 
         Inertia::flash('toast', [
@@ -85,7 +89,7 @@ class AdminToolController extends Controller
             'message' => 'Ferramenta cadastrada.',
         ]);
 
-        return to_route('admin.tools.index');
+        return to_route('my-tools.index');
     }
 
     public function edit(Tool $tool): Response
@@ -96,15 +100,13 @@ class AdminToolController extends Controller
 
         $hasActiveRental = $tool->hasNonFinishedRentals();
 
-        return Inertia::render('admin/tools/edit', [
+        return Inertia::render('MyTools/Edit', [
             'tool' => self::serializeForm($tool, $hasActiveRental),
         ]);
     }
 
-    public function update(UpdateToolRequest $request, Tool $tool): RedirectResponse
+    public function update(UpdateMyToolRequest $request, Tool $tool): RedirectResponse
     {
-        $this->authorize('update', $tool);
-
         $tool->fill($request->validated());
         $tool->save();
 
@@ -113,7 +115,7 @@ class AdminToolController extends Controller
             'message' => 'Ferramenta atualizada.',
         ]);
 
-        return to_route('admin.tools.edit', ['tool' => $tool]);
+        return to_route('my-tools.edit', ['tool' => $tool]);
     }
 
     public function destroy(Tool $tool): RedirectResponse
@@ -126,7 +128,7 @@ class AdminToolController extends Controller
                 'message' => 'Não é possível excluir: existe empréstimo ativo ou pendente.',
             ]);
 
-            return to_route('admin.tools.index');
+            return to_route('my-tools.index');
         }
 
         $tool->delete();
@@ -136,7 +138,7 @@ class AdminToolController extends Controller
             'message' => 'Ferramenta removida.',
         ]);
 
-        return to_route('admin.tools.index');
+        return to_route('my-tools.index');
     }
 
     /**

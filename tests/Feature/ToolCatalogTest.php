@@ -99,7 +99,7 @@ test('ferramenta com empréstimo finalizado aparece quando período coincide', f
     $admin = User::factory()->admin()->create();
 
     $tool = Tool::factory()->create([
-        'user_id' => $admin->id,
+        'owner_id' => $admin->id,
         'name' => 'Livre Após Finalizado',
         'is_available' => true,
     ]);
@@ -129,13 +129,13 @@ test('ferramenta com empréstimo sobreposto não aparece quando período coincid
     $admin = User::factory()->admin()->create();
 
     $livre = Tool::factory()->create([
-        'user_id' => $admin->id,
+        'owner_id' => $admin->id,
         'name' => 'Sem Conflito',
         'is_available' => true,
     ]);
 
     $ocupada = Tool::factory()->create([
-        'user_id' => $admin->id,
+        'owner_id' => $admin->id,
         'name' => 'Com Conflito',
         'is_available' => true,
     ]);

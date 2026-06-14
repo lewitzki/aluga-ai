@@ -8,6 +8,8 @@ use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\ClientRentalClosureController;
 use App\Http\Controllers\ClientRentalController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MyToolImageController;
+use App\Http\Controllers\MyToolsController;
 use App\Http\Controllers\ToolCatalogController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -51,6 +53,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('cliente/emprestimos/{rental}/fechar', [ClientRentalClosureController::class, 'store'])
             ->name('cliente.rentals.close');
     });
+
+    Route::resource('my-tools', MyToolsController::class)
+        ->except(['show'])
+        ->parameters(['my-tools' => 'tool']);
+    Route::post('my-tools/{tool}/imagens', [MyToolImageController::class, 'store'])
+        ->name('my-tools.images.store');
+    Route::delete('my-tools/{tool}/imagens/{tool_image}', [MyToolImageController::class, 'destroy'])
+        ->name('my-tools.images.destroy');
 });
 
 require __DIR__.'/settings.php';

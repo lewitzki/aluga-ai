@@ -55,7 +55,7 @@ test('admin recebe erro de validação ao exceder máximo de imagens na criaçã
 
 test('admin adiciona imagens pela rota de edição', function () {
     $admin = User::factory()->admin()->create();
-    $tool = Tool::factory()->create(['user_id' => $admin->id]);
+    $tool = Tool::factory()->create(['owner_id' => $admin->id]);
 
     $one = UploadedFile::fake()->image('a.jpg');
     $two = UploadedFile::fake()->image('b.jpg');
@@ -74,7 +74,7 @@ test('admin adiciona imagens pela rota de edição', function () {
 
 test('admin remove imagem e arquivo no disco', function () {
     $admin = User::factory()->admin()->create();
-    $tool = Tool::factory()->create(['user_id' => $admin->id]);
+    $tool = Tool::factory()->create(['owner_id' => $admin->id]);
 
     $path = 'tools/'.$tool->id.'/fake.jpg';
     Storage::disk('public')->put($path, 'x');
@@ -96,7 +96,7 @@ test('admin remove imagem e arquivo no disco', function () {
 test('admin não gerencia imagens de ferramenta de outro usuário', function () {
     $admin = User::factory()->admin()->create();
     $other = User::factory()->admin()->create();
-    $tool = Tool::factory()->create(['user_id' => $other->id]);
+    $tool = Tool::factory()->create(['owner_id' => $other->id]);
 
     $file = UploadedFile::fake()->image('nope.jpg');
 

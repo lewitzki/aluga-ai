@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Admin\StoreToolImagesRequest;
+use App\Http\Requests\Client\StoreMyToolImagesRequest;
 use App\Models\Tool;
 use App\Models\ToolImage;
 use App\Services\ToolImageUploader;
@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Throwable;
 
-class AdminToolImageController extends Controller
+class MyToolImageController extends Controller
 {
-    public function store(StoreToolImagesRequest $request, Tool $tool): RedirectResponse
+    public function store(StoreMyToolImagesRequest $request, Tool $tool): RedirectResponse
     {
         try {
             app(ToolImageUploader::class)->attach($tool, $request->file('images'));

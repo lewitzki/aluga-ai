@@ -18,12 +18,12 @@ test('admin lista apenas ferramentas que ele criou', function () {
     $adminB = User::factory()->admin()->create();
 
     Tool::factory()->create([
-        'user_id' => $adminA->id,
+        'owner_id' => $adminA->id,
         'name' => 'Ferramenta do Admin A',
     ]);
 
     Tool::factory()->create([
-        'user_id' => $adminB->id,
+        'owner_id' => $adminB->id,
         'name' => 'Ferramenta do Admin B',
     ]);
 
@@ -51,7 +51,7 @@ test('admin cria ferramenta', function () {
         ->assertRedirect(route('admin.tools.index'));
 
     $created = Tool::query()
-        ->where('user_id', $admin->id)
+        ->where('owner_id', $admin->id)
         ->where('name', 'Martelo Novo')
         ->first();
 
@@ -68,7 +68,7 @@ test('admin cria ferramenta', function () {
 test('admin acessa página de edição com imagens e status operacional', function () {
     $admin = User::factory()->admin()->create();
     $tool = Tool::factory()->create([
-        'user_id' => $admin->id,
+        'owner_id' => $admin->id,
         'name' => 'Serra Circular',
         'hourly_rate' => 25.5,
         'is_available' => true,
@@ -93,7 +93,7 @@ test('admin atualiza ferramenta sem afetar vínculo com empréstimo', function (
     $cliente = User::factory()->cliente()->create();
 
     $tool = Tool::factory()->create([
-        'user_id' => $admin->id,
+        'owner_id' => $admin->id,
         'name' => 'Nome Antigo',
         'hourly_rate' => 40,
     ]);
@@ -126,7 +126,7 @@ test('admin não exclui ferramenta com empréstimo não finalizado', function ()
     $admin = User::factory()->admin()->create();
     $cliente = User::factory()->cliente()->create();
 
-    $tool = Tool::factory()->create(['user_id' => $admin->id]);
+    $tool = Tool::factory()->create(['owner_id' => $admin->id]);
 
     RentalFactory::new()->create([
         'tool_id' => $tool->id,
@@ -145,7 +145,7 @@ test('admin exclui ferramenta quando há apenas empréstimo finalizado', functio
     $admin = User::factory()->admin()->create();
     $cliente = User::factory()->cliente()->create();
 
-    $tool = Tool::factory()->create(['user_id' => $admin->id]);
+    $tool = Tool::factory()->create(['owner_id' => $admin->id]);
 
     RentalFactory::new()->create([
         'tool_id' => $tool->id,
@@ -163,7 +163,7 @@ test('admin exclui ferramenta quando há apenas empréstimo finalizado', functio
 test('admin não remove ferramenta de outro usuário', function () {
     $admin = User::factory()->admin()->create();
     $other = User::factory()->admin()->create();
-    $tool = Tool::factory()->create(['user_id' => $other->id]);
+    $tool = Tool::factory()->create(['owner_id' => $other->id]);
 
     $this->actingAs($admin)
         ->delete(route('admin.tools.destroy', $tool))
@@ -173,7 +173,7 @@ test('admin não remove ferramenta de outro usuário', function () {
 test('admin não edita ferramenta de outro usuário', function () {
     $admin = User::factory()->admin()->create();
     $other = User::factory()->admin()->create();
-    $tool = Tool::factory()->create(['user_id' => $other->id]);
+    $tool = Tool::factory()->create(['owner_id' => $other->id]);
 
     $this->actingAs($admin)
         ->put(route('admin.tools.update', $tool), [

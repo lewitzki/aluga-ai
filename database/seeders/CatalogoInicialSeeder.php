@@ -37,7 +37,7 @@ class CatalogoInicialSeeder extends Seeder
         $maquinaSoldaArco = Tool::query()->updateOrCreate(
             ['name' => 'Máquina de Solda Arco 250A'],
             [
-                'user_id' => $admin->id,
+                'owner_id' => $admin->id,
                 'description' => 'Inversora de solda eletrodo revestido 250A monofásica. Busca única maquina_solda_arco_250a_inversora.',
                 'hourly_rate' => 25.5,
                 'is_available' => true,
@@ -47,7 +47,7 @@ class CatalogoInicialSeeder extends Seeder
         $kitInstalacaoEletrica = Tool::query()->updateOrCreate(
             ['name' => 'Kit Instalação Elétrica Residencial'],
             [
-                'user_id' => $admin->id,
+                'owner_id' => $admin->id,
                 'description' => 'Multímetro, alicate amperímetro e ferramentas para instalações elétricas residenciais.',
                 'hourly_rate' => 150,
                 'is_available' => true,
@@ -57,7 +57,7 @@ class CatalogoInicialSeeder extends Seeder
         $marteloUnha = Tool::query()->updateOrCreate(
             ['name' => 'Martelo Unha 500g'],
             [
-                'user_id' => $admin->id,
+                'owner_id' => $admin->id,
                 'description' => 'Martelo unha com cabo emborrachado, 500g. Temporariamente indisponível para locação.',
                 'hourly_rate' => 40,
                 'is_available' => false,
@@ -67,7 +67,7 @@ class CatalogoInicialSeeder extends Seeder
         $esmerilhadeiraAngular = Tool::query()->updateOrCreate(
             ['name' => 'Esmerilhadeira Angular 4½ Pol'],
             [
-                'user_id' => $admin->id,
+                'owner_id' => $admin->id,
                 'description' => 'Esmerilhadeira angular 850W com disco de 4½ polegadas para corte e desbaste em metal.',
                 'hourly_rate' => 55,
                 'is_available' => true,
@@ -259,7 +259,7 @@ class CatalogoInicialSeeder extends Seeder
             Tool::query()->updateOrCreate(
                 ['name' => $ferramenta['name']],
                 [
-                    'user_id' => $adminUserId,
+                    'owner_id' => $adminUserId,
                     'description' => $ferramenta['description'],
                     'hourly_rate' => $ferramenta['hourly_rate'],
                     'is_available' => true,
@@ -295,7 +295,7 @@ class CatalogoInicialSeeder extends Seeder
         ]);
 
         $ferramentasAdicionais = Tool::query()
-            ->where('user_id', $adminUserId)
+            ->where('owner_id', $adminUserId)
             ->whereNotIn('name', self::NOMES_FERRAMENTAS_PRINCIPAIS)
             ->orderBy('id')
             ->get()

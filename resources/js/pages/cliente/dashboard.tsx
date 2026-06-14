@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
 import { dashboard } from '@/routes/cliente';
+import myTools from '@/routes/myTools';
 
 type RentalStatus = 'scheduled' | 'active' | 'finished' | 'late';
 
@@ -42,6 +43,7 @@ type PageProps = {
     summary: {
         total_paid: string;
         currency: string;
+        tools_count: number;
     };
     active_rentals: ClientRentalRow[];
     history_rentals: ClientRentalRow[];
@@ -237,25 +239,49 @@ export default function ClientDashboard({
                     </p>
                 ) : null}
 
-                <Card data-testid="client-dashboard-summary">
-                    <CardHeader>
-                        <CardTitle>Resumo financeiro</CardTitle>
-                        <CardDescription>
-                            Total pago com base em pagamentos aprovados.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <p
-                            className="text-3xl font-semibold tracking-tight"
-                            data-testid="client-dashboard-total-paid"
-                        >
-                            {formatCurrency(
-                                summary.total_paid,
-                                summary.currency,
-                            )}
-                        </p>
-                    </CardContent>
-                </Card>
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <Card data-testid="client-dashboard-summary">
+                        <CardHeader>
+                            <CardTitle>Resumo financeiro</CardTitle>
+                            <CardDescription>
+                                Total pago com base em pagamentos aprovados.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p
+                                className="text-3xl font-semibold tracking-tight"
+                                data-testid="client-dashboard-total-paid"
+                            >
+                                {formatCurrency(
+                                    summary.total_paid,
+                                    summary.currency,
+                                )}
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card data-testid="client-dashboard-tools-summary">
+                        <CardHeader>
+                            <CardTitle>Minhas ferramentas</CardTitle>
+                            <CardDescription>
+                                Ferramentas cadastradas por você para aluguel.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex flex-col gap-3">
+                            <p
+                                className="text-3xl font-semibold tracking-tight"
+                                data-testid="client-dashboard-tools-count"
+                            >
+                                {summary.tools_count}
+                            </p>
+                            <Button variant="outline" size="sm" asChild>
+                                <a href={myTools.index.url()}>
+                                    Gerenciar ferramentas
+                                </a>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
 
                 <section className="flex flex-col gap-3">
                     <h3 className="text-base font-medium">
