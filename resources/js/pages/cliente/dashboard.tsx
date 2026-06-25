@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
 import { dashboard } from '@/routes/cliente';
-import myTools from '@/routes/myTools';
+import myTools from '@/routes/my-tools';
 
 type RentalStatus = 'scheduled' | 'active' | 'finished' | 'late';
 

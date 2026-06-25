@@ -23,7 +23,7 @@ import { homeDashboard, logoHome } from '@/lib/home-dashboard';
 import { dashboard } from '@/routes';
 import admin from '@/routes/admin';
 import adminTools from '@/routes/admin/tools';
-import myTools from '@/routes/myTools';
+import myTools from '@/routes/my-tools';
 import type { NavItem, User } from '@/types';
 
 function dashboardNavItem(user: User | null | undefined): NavItem {

@@ -3,7 +3,7 @@ import { Pencil, Plus, Trash2 } from 'lucide-react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { dashboard } from '@/routes/cliente';
-import myTools from '@/routes/myTools';
+import myTools from '@/routes/my-tools';
 import type { LaravelPaginator } from '@/types/catalog';
 
 type ToolOperationalStatus = 'disponivel' | 'emprestada' | 'indisponivel';

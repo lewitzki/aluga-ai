@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { dashboard } from '@/routes/cliente';
-import myTools from '@/routes/myTools';
+import myTools from '@/routes/my-tools';
 
 type ToolOperationalStatus = 'disponivel' | 'emprestada' | 'indisponivel';
 
